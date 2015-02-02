@@ -1,0 +1,25 @@
+@import "../reindeer/reindeer.scss";
+
+/* This contains all of your theme.*/
+/* If somebody wants to extend the theme she will include this mixin. */
+@mixin Gotheme {
+  /* Include all the styles from the reindeer theme */
+  @include reindeer;
+
+.theme-image {
+	width:200px;
+	height:150px;
+}
+.layout-style {
+	color: green;
+	font-size:20px;
+}	
+}
+.theme-image {
+	width:200px;
+	height:150px;
+}
+.layout-style {
+	color: green;
+	font-size:20px;	
+}	

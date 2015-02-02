@@ -1,0 +1,13 @@
+/* Import all the mixins for this theme */
+@import "Gotheme.scss";
+
+/* Font embeds and keyframe definitions need to be 
+ * on the top level of the stylesheet, not nested 
+ * with any selectors, so we output them here */
+
+
+/* Output the actual theme selectors */
+. Gotheme {
+	@include dashboard;
+}
+
