@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import com.example.login.task.report.DeleteReport;
+import com.example.login.task.report.UpdateReport;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
@@ -442,6 +444,20 @@ public class LoginUI extends UI {
 	                                         addWindow(add_report_window);
                                      }
                                  };
+                                 Command update_report_cmd = new Command() {
+                                    @Override
+                                    public void menuSelected( MenuItem selectedItem) {
+                                        Window update_report_window = new UpdateReport();
+                                        addWindow(update_report_window);
+                                     }
+                                };
+                                Command delete_report_cmd = new Command() {
+                                    @Override
+                                    public void menuSelected( MenuItem selectedItem) {
+                                        Window delete_report_window = new DeleteReport();
+                                        addWindow(delete_report_window);
+                                    }
+                                };
                                  
                                  MenuBar settings = new MenuBar();
                                  MenuItem settingsMenu = settings.addItem("", null);
@@ -461,8 +477,8 @@ public class LoginUI extends UI {
 	                                 
 	                                 MenuItem reportMenu = productMenu.addItem("Report", null);
 	                                 reportMenu.addItem("Create Report", add_report_cmd);
-	                                 reportMenu.addItem("Update Report", null);
-	                                 reportMenu.addItem("Delete Report", null);
+	                                 reportMenu.addItem("Update Report", update_report_cmd);
+	                                 reportMenu.addItem("Delete Report", delete_report_cmd);
 	                                 
 	                                 MenuItem tasktMenu = settingsMenu.addItem("Task", all_task_cmd);
 	                                 tasktMenu.addItem("Create Task", add_task_cmd);
@@ -493,8 +509,8 @@ public class LoginUI extends UI {
 	                                 
 	                                 MenuItem reportMenu = productMenu.addItem("Report", null);
 	                                 reportMenu.addItem("Create Report", add_report_cmd);
-	                                 reportMenu.addItem("Update Report", null);
-	                                 reportMenu.addItem("Delete Report", null);
+	                                 reportMenu.addItem("Update Report", update_report_cmd);
+	                                 reportMenu.addItem("Delete Report", delete_report_cmd);
 	                                 
 	                                 settingsMenu.setStyleName("icon-cog");
 	                                 settingsMenu.addSeparator();

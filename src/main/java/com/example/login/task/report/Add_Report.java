@@ -45,30 +45,30 @@ public class Add_Report extends Window{
 	Button add;
 	
 	private ComboBox projects;
-	private Student current_user;
-	private Set<Product> product_list = new HashSet<Product>();
-	private Set<Report> report_list = new HashSet<Report>();
+	private Student currentUser;
+	private Set<Product> productList = new HashSet<Product>();
+	private Set<Report> reportList = new HashSet<Report>();
 	private ComboBox products;
 	private ComboBox years;
 	private ComboBox months;
 	
 	public Add_Report(){
-		setCaption("Create Products");
+		setCaption("Create Reports");
 		setModal(true);
 		setResizable(false);
         addStyleName("edit-dashboard");              
         setContent(main = new VerticalLayout());
         
-		current_user = LoginUI.current_user;
+		currentUser = LoginUI.current_user;
 		projects = new ComboBox("Project List");
         projects.setImmediate(true);
         projects.setNullSelectionAllowed(false);
-        
-		if(current_user.getPosition().getTitle().toLowerCase().equals("admin"))
+
+		if(currentUser.getPosition().getTitle().toLowerCase().equals("admin"))
 			for (Project project : Projects.getProjects()) 
 				projects.addItem(project);
 		else
-			for (Project project : current_user.getProjects()) 
+			for (Project project : currentUser.getProjects())
 				projects.addItem(project);
 		
 		products = new ComboBox("Product List");
@@ -80,9 +80,9 @@ public class Add_Report extends Window{
 			@Override
 			public void valueChange(ValueChangeEvent event) {
 				// TODO Auto-generated method stub
-				product_list.clear();
-				product_list =((Project) projects.getValue()).getProducts();
-				for (Product prod : product_list) {
+				productList.clear();
+                productList =((Project) projects.getValue()).getProducts();
+				for (Product prod : productList) {
 					products.addItem(prod);
 				}
 			}
@@ -92,7 +92,7 @@ public class Add_Report extends Window{
 			@Override
 			public void valueChange(ValueChangeEvent event) {
 				// TODO Auto-generated method stub
-				report_list = ( (Product) products.getValue()).getReport();
+				reportList = ( (Product) products.getValue()).getReport();
 				update();
 			}
 		});
@@ -177,6 +177,9 @@ public class Add_Report extends Window{
 
                                                         session.save(report);
                                                         session.getTransaction().commit();
+
+                                                        reportList.add(report);
+                                                        update();
 													}
 													else sub_text.setValue("please, select the product");
 												}
@@ -225,7 +228,7 @@ public class Add_Report extends Window{
 	
 	private void update(){
 		product_layout.removeAllComponents();
-		for (Report report : report_list) {
+		for (Report report : reportList) {
 			product_layout.addComponent(new Label(report.toString()));
 		}
 	}

@@ -158,7 +158,7 @@ public class Edit_Product extends Window{
 						
 						@Override
 						public void layoutClick(LayoutClickEvent event) {
-							// TODO Auto-generated method stub
+
 							current_product = prod;
 							name.setValue(current_product.getName());
 						}
