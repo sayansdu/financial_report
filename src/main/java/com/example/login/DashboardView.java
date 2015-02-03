@@ -269,7 +269,12 @@ public class DashboardView extends VerticalLayout implements View{
         	l.addComponent(label);
         	task.setReaded(true);
         	Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        	session.beginTransaction();
+
+            if(session.getTransaction() == null)
+        	    session.beginTransaction();
+            else
+                session.getTransaction().begin();
+
         	session.update(task);
         	session.getTransaction().commit();
 		}

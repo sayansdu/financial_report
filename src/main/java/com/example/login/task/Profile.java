@@ -1,9 +1,6 @@
 package com.example.login.task;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 
 import org.hibernate.Session;
 
@@ -189,12 +186,17 @@ public class Profile extends Window {
 		public OutputStream receiveUpload(String filename, String mimeType) {
 			// TODO Auto-generated method stub
 			String ext = filename.substring(filename.indexOf("."));
-			String file_name = "C:\\tmp\\uploaded\\" +current_user2.getName()+"-"+"logo"+ext;
-			
+			String file_name = "C:\\dev\\finance\\upload\\" +current_user2.getName()+"-"+"logo"+ext;
+
 			FileOutputStream fos = null; 
 			 try {
 		            // Open the file for writing.
 		            file = new File(file_name);
+
+                    if(!file.exists()){
+//                        file.mkdirs();
+                        file.createNewFile();
+                    }
 		            fos = new FileOutputStream(file);
 		            Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		   		 	session.beginTransaction();
@@ -208,6 +210,9 @@ public class Profile extends Window {
 		                    Notification.TYPE_ERROR_MESSAGE);
 				 return null;
 			 }
+             catch (IOException e){
+                 e.printStackTrace();
+             }
 			 return fos;			
 		}
 		

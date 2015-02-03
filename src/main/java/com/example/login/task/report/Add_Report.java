@@ -11,6 +11,7 @@ import com.example.login.entity.Product;
 import com.example.login.entity.Project;
 import com.example.login.entity.Report;
 import com.example.login.entity.Student;
+import com.example.login.util.HibernateUtil;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
@@ -25,6 +26,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import org.hibernate.Session;
 
 @SuppressWarnings("serial")
 public class Add_Report extends Window{
@@ -100,7 +102,7 @@ public class Add_Report extends Window{
 		years.setImmediate(true);
 		years.setNullSelectionAllowed(false);
 		years.setWidth("60px");
-		for(int i=0; i<11; i++){
+		for(int i=0; i<10; i++){
 			years.addItem("201"+i);
 		}
 		
@@ -158,10 +160,23 @@ public class Add_Report extends Window{
 											
 											@Override
 											public void buttonClick(ClickEvent event) {
-												// TODO Auto-generated method stub
+
 												if(projects.getValue()!=null){
 													if(products.getValue()!=null){
-														
+                                                        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+                                                        session.beginTransaction();
+
+                                                        Report report = new Report();
+                                                        report.setProduct((Product) products.getValue());
+                                                        report.setAmount(Integer.parseInt(amount.getValue()));
+                                                        report.setSold_amount(Integer.parseInt(sold_amount.getValue()));
+                                                        report.setYear(Integer.parseInt((String) years.getValue()));
+                                                        report.setMonth((Month) months.getValue());
+                                                        report.setCost_price(Integer.parseInt(cost_price.getValue()));
+                                                        report.setPrice(Integer.parseInt(price.getValue()));
+
+                                                        session.save(report);
+                                                        session.getTransaction().commit();
 													}
 													else sub_text.setValue("please, select the product");
 												}

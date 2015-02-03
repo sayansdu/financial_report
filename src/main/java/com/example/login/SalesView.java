@@ -21,18 +21,11 @@ import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.DateField;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.Field.ValueChangeEvent;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
+
 public class SalesView extends VerticalLayout implements View{
 
 	private Timeline timeline = new Timeline();
@@ -40,7 +33,7 @@ public class SalesView extends VerticalLayout implements View{
     final Container.Indexed AAPL = buildContainer();
     
     DateField date;
-    DateField date2;
+    PopupDateField date2;
     Calendar cal = new GregorianCalendar(2011, Calendar.SEPTEMBER, 1);
     Calendar cal2 = new GregorianCalendar(2012, Calendar.MAY, 30);  
     Color[] colors = new Color[] { new Color(52, 154, 255),
@@ -95,7 +88,7 @@ public class SalesView extends VerticalLayout implements View{
         date.setValue(cal.getTime());
         csslay.addComponent(date);
         
-        date2 = new DateField("end:");
+        date2 = new PopupDateField("end:");
         date2.setValue(cal2.getTime());
         csslay.addComponent(date2);
         

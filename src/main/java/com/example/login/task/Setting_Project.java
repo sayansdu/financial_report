@@ -192,7 +192,7 @@ public class Setting_Project extends Window {
 										
 										@Override
 										public void buttonClick(ClickEvent event) {
-											// TODO Auto-generated method stub
+
 											project_users.remove(student);
 											update();
 										}
@@ -232,7 +232,7 @@ public class Setting_Project extends Window {
 //							
 //							@Override
 //							public void buttonClick(ClickEvent event) {
-//								// TODO Auto-generated method stub
+//
 //								Window user = new Add_User();
 //								getUI().addWindow(user);
 //								user.addCloseListener(new CloseListener() {

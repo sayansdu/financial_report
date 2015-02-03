@@ -185,7 +185,7 @@ public class DataProvider implements Serializable{
 	        } else {
 			           	
 	            String baseDirectory = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
-	            cache = new File("C:\\Users\\light\\workspace\\Sample\\WebContent\\WEB-INF\\files\\" + "movies.txt");
+	            cache = new File("C:\\dev\\finance\\files\\" + "movies.txt");
 	        }
 
 	        JsonObject json = null;

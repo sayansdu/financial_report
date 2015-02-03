@@ -286,9 +286,7 @@ public class LoginUI extends UI {
                                         ContentMode.HTML);
                                 logo.setSizeUndefined();
                                 addComponent(logo);
-                                // addComponent(new Image(null, new
-                                // ThemeResource(
-                                // "img/branding.png")));
+
                             }
                         });
                         
@@ -348,9 +346,12 @@ public class LoginUI extends UI {
                                  Command current_project_cmd = new Command() {
                                      @Override
                                      public void menuSelected( MenuItem selectedItem) {
-                                         Window current_project_window = new Current_Project(current_project, current_user);
-                                         if(current_project!=null)  addWindow(current_project_window);
-                                         else Notification.show("Project is not created");
+                                         if(current_project != null){
+                                             Window current_project_window = new Current_Project(current_project, current_user);
+                                             addWindow(current_project_window);
+                                         }
+                                         else
+                                             Notification.show("Project is not created");
                                          
                                      }
                                  }; 
