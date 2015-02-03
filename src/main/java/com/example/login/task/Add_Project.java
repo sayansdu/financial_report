@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.hibernate.Session;
 
+import com.example.login.LoginUI;
 import com.example.login.controller.Users;
 import com.example.login.entity.Project;
 import com.example.login.entity.Student;
@@ -79,6 +80,7 @@ public class Add_Project extends Window{
         						setCaption("Select User");
         						users = new ComboBox();
         						users.addStyleName("window-label");
+        						users.setNullSelectionAllowed(false);
         						add_user_combobox();
         						addComponent(new HorizontalLayout(){
         							{
@@ -177,16 +179,22 @@ public class Add_Project extends Window{
 						if( !(tf.getValue().isEmpty()) && (tf.getValue().length()>2) ){
 							if(!ta.getValue().isEmpty()){
 								if(!selected_users.isEmpty()){
+									Project project = new Project();
+									
 									Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 									session.beginTransaction();
-									Project project = new Project();
+									
 									project.setName(tf.getValue().trim());
 									project.setDescription(ta.getValue().trim());
 									project.setUser(new HashSet<Student>(selected_users));
-									
+									LoginUI.current_project = project;
 									session.save(project);
-									System.out.println("add project is complete");
-									session.getTransaction().commit();				
+
+									for (Student student : selected_users) {
+										student.setCurrent_project(project);
+										session.update(student);
+									}
+									session.getTransaction().commit();
 									selected_users.clear();
 									close();
 								}

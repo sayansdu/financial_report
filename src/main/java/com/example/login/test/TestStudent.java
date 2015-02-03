@@ -8,12 +8,13 @@ import org.hibernate.Session;
 import com.example.login.controller.Users;
 import com.example.login.entity.Project;
 import com.example.login.entity.Student;
+import com.example.login.entity.Task;
 import com.example.login.util.HibernateUtil;
 
 public class TestStudent {
 	public static void main(String[] args){
 				
-		getStudentByName("hp");
+		getStudents();
 		
 	}
 	
@@ -36,7 +37,12 @@ public class TestStudent {
 
 		ArrayList<Student> stud = Users.getUsers();
 		for (Student student : stud) {
-			System.out.println(student.getName()+" is "+student.getPosition());
+			System.out.print(student.getName()+" is "+student.getPosition()+" tasks:");
+			Set<Task> tasks = student.getSended();
+			for (Task task : tasks) {
+				System.out.print(task.getText()+" : ");
+			}
+			System.out.println();
 		}
 		
 		session.getTransaction().commit();

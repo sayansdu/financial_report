@@ -12,7 +12,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -45,7 +44,7 @@ public class Task {
 		this.project = project;
 	}
 		
-	@OneToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "from_id", nullable=false)
 	public Student getStudent() {
 		return from;
@@ -89,5 +88,6 @@ public class Task {
 	public void setReaded(boolean readed) {
 		this.readed = readed;
 	}
+
 	
 }

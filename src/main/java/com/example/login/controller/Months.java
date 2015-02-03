@@ -4,20 +4,16 @@ import java.util.ArrayList;
 
 import org.hibernate.Session;
 
-import com.example.login.entity.Student;
-import com.example.login.entity.Task;
+import com.example.login.entity.Month;
 import com.example.login.util.HibernateUtil;
 
-public class Tasks {
-	
-	public static ArrayList<Task> getTasks(){
+public class Months {
+
+	public static ArrayList<Month> getMonths(){
 		 Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		 session.beginTransaction();
-		 ArrayList<Task> list = (ArrayList) session.createCriteria(Task.class).list();
-		 session.getTransaction().commit();	 
+		 ArrayList<Month> list =  (ArrayList) session.createCriteria(Month.class).list();
+		 session.getTransaction().commit();	
 		 return list;
 	 }
-	
-
-	
 }

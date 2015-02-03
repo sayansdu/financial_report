@@ -19,6 +19,12 @@ public class Users {
 		 session.beginTransaction();
 		 ArrayList<Student> list = (ArrayList<Student>) session.createCriteria(Student.class).list();
 		 session.getTransaction().commit();	 
+		 for (Student student : list) {
+			if(student.getPosition().getTitle().toLowerCase().equals("admin")){
+				list.remove(student);
+				break;
+			}
+		}
 		 return list;
 	 }
 	

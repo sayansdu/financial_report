@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @SuppressWarnings("serial")
@@ -26,8 +27,11 @@ public class Student implements Serializable{
 	private String email;
 	private String logo;
 	private Position position;
+	private Project current_project;
+
 	private Set<Project> projects = new HashSet<Project>();
-	private Set<Task> to;
+	private Set<Task> received;
+	private Set<Task> sended = new HashSet<Task>();
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -96,12 +100,31 @@ public class Student implements Serializable{
 
 	
 	@ManyToMany(mappedBy = "to", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
-	public Set<Task> getTo() {
-		return to;
+	public Set<Task> getReceived() {
+		return received;
 	}
 
-	public void setTo(Set<Task> projects) {
-		this.to = projects;
+	public void setReceived(Set<Task> received) {
+		this.received = received;
+	}
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "student")
+	public Set<Task> getSended() {
+		return sended;
+	}
+
+	public void setSended(Set<Task> sended) {
+		this.sended = sended;
+	}
+	
+	@ManyToOne
+	@JoinColumn(name="current_project")
+	public Project getCurrent_project() {
+		return current_project;
+	}
+
+	public void setCurrent_project(Project current_project) {
+		this.current_project = current_project;
 	}
 	
 	public String toString(){

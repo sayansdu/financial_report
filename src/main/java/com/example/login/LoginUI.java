@@ -17,12 +17,18 @@ import com.example.login.task.Add_Project;
 import com.example.login.task.Add_Task;
 import com.example.login.task.Add_To_Project;
 import com.example.login.task.Add_User;
+import com.example.login.task.All_Task;
 import com.example.login.task.Current_Project;
+import com.example.login.task.Current_Task;
 import com.example.login.task.Delete_Project;
 import com.example.login.task.Delete_Task;
 import com.example.login.task.Password;
 import com.example.login.task.Profile;
 import com.example.login.task.Setting_Project;
+import com.example.login.task.product.Add_Product;
+import com.example.login.task.product.Delete_Product;
+import com.example.login.task.product.Edit_Product;
+import com.example.login.task.report.Add_Report;
 import com.example.login.util.HibernateUtil;
 import com.vaadin.annotations.Theme;
 import com.vaadin.event.ShortcutListener;
@@ -82,11 +88,12 @@ public class LoginUI extends UI {
 	private Transferable items;
 	private Navigator nav;
 	public String user_name = "";
-	public Student current_user;
-	public Project current_project;
+	public static Student current_user=null;
+	public static Project current_project=null;
 	boolean is_user = false;
 	boolean autoCreateReport = false;
-
+	
+			;
 	HashMap<String, Button> viewNameToMenuButton = new HashMap<String, Button>();
 	HelpManager helpManager;
 	HashMap<String, Class<? extends View>> routes = new HashMap<String, Class<? extends View>>() {
@@ -94,8 +101,6 @@ public class LoginUI extends UI {
             put("/dashboard", DashboardView.class);
             put("/sales", SalesView.class);
             put("/transactions", TransactionsView.class);
-//            put("/reports", ReportsView.class);
-//            put("/schedule", ScheduleView.class);
         }
     };
     Session session;
@@ -244,9 +249,8 @@ public class LoginUI extends UI {
 	
 	private void buildMainView()
 	 {
-		for (Project pro : current_user.getProjects()) {
-			current_project = pro;
-		}    
+		current_project = current_user.getCurrent_project();
+		   
 		
 		nav = new Navigator(this, content);
         for (String route : routes.keySet()) {
@@ -270,7 +274,14 @@ public class LoginUI extends UI {
                         addComponent(new CssLayout() {
                             {
                             	addStyleName("branding");
-                                Label logo = new Label(
+                            	Label logo;
+                            	if(current_user.getPosition().getTitle().toLowerCase().equals("admin")){
+                            		logo = new Label(
+                                            "<span>Financial</span>Analysis",
+                                            ContentMode.HTML);
+                            	}
+                            	else
+                            		logo = new Label(
                                         "<span>project: </span>"+current_project.getName(),
                                         ContentMode.HTML);
                                 logo.setSizeUndefined();
@@ -286,7 +297,7 @@ public class LoginUI extends UI {
                         
                         addComponent(new VerticalLayout() {
                             {
-                            	 Image profilePic;
+                            	 final Image profilePic;
                             	 setSizeUndefined();
                                  addStyleName("user");
                                  if(current_user.getLogo()==null)  profilePic = new Image(null,  new ThemeResource("img/profile-pic.png"));
@@ -300,17 +311,13 @@ public class LoginUI extends UI {
                                  userName.setSizeUndefined();
                                  addComponent(userName);
                                  setComponentAlignment(userName, Alignment.MIDDLE_CENTER);
-                                 Command cmd = new Command() {
-                                     @Override
-                                     public void menuSelected( MenuItem selectedItem) {
-                                         Notification.show("temporary not work dashboard");
-                                     }
-                                 };
+
                                  Command account_cmd = new Command() {
                                      @Override
                                      public void menuSelected( MenuItem selectedItem) {
                                          Window preference = new Profile(current_user);
                                          addWindow(preference);
+                                         refresh_user(preference);
                                      }
                                  };
                                  Command password_cmd = new Command() {
@@ -318,6 +325,7 @@ public class LoginUI extends UI {
                                      public void menuSelected( MenuItem selectedItem) {
                                          Window passwoord = new Password(current_user);
                                          addWindow(passwoord);
+                                         refresh_user(passwoord);
                                      }
                                  };
                                  Command add_user_cmd = new Command() {
@@ -325,6 +333,7 @@ public class LoginUI extends UI {
                                      public void menuSelected( MenuItem selectedItem) {
                                          Window add_user_window = new Add_User();
                                          addWindow(add_user_window);
+                                         refresh_project(add_user_window);
                                      }
                                  };                                 
                                  Command add_project_cmd = new Command() {
@@ -332,35 +341,47 @@ public class LoginUI extends UI {
                                      public void menuSelected( MenuItem selectedItem) {
                                          Window project_window = new Add_Project(current_user);
                                          addWindow(project_window);
+                                         refresh_project(project_window);
+                                         refresh_user(project_window);
                                      }
                                  };                                   
                                  Command current_project_cmd = new Command() {
                                      @Override
                                      public void menuSelected( MenuItem selectedItem) {
                                          Window current_project_window = new Current_Project(current_project, current_user);
-                                         addWindow(current_project_window);
+                                         if(current_project!=null)  addWindow(current_project_window);
+                                         else Notification.show("Project is not created");
+                                         
                                      }
                                  }; 
                                  Command delete_project_cmd = new Command() {
                                      @Override
                                      public void menuSelected( MenuItem selectedItem) {
                                          Window delete_project_window = new Delete_Project();
-                                         addWindow(delete_project_window);
+	                                         addWindow(delete_project_window);
+	                                         refresh_project(delete_project_window);
+	                                         refresh_user(delete_project_window);
+                                         
                                      }
                                  }; 
                                  Command setting_project_cmd = new Command() {
                                      @Override
                                      public void menuSelected( MenuItem selectedItem) {
                                          Window setting_project_window = new Setting_Project(current_user);
-                                         addWindow(setting_project_window);
+	                                         addWindow(setting_project_window);
+	                                         refresh_project(setting_project_window);
+                                         
                                      }
                                  }; 
                                  Command add_task_cmd = new Command() {
                                      @Override
                                      public void menuSelected( MenuItem selectedItem) {
                                          Window add_task_window = new Add_Task(current_user, current_project);
-                                         addWindow(add_task_window);
-                                         refresh(add_task_window);
+                                         if(current_project!=null){
+	                                         addWindow(add_task_window);
+	                                         refresh_user(add_task_window);
+                                         }
+                                         else Notification.show("Project is not created");
                                          
                                      }
                                  }; 
@@ -368,31 +389,119 @@ public class LoginUI extends UI {
                                      @Override
                                      public void menuSelected( MenuItem selectedItem) {
                                          Window delete_task_window = new Delete_Task(current_user, current_project);
-                                         addWindow(delete_task_window);
+                                         if(current_project!=null){
+	                                         addWindow(delete_task_window);
+	                                         refresh_user(delete_task_window);
+                                         }
+                                         else Notification.show("Project is not created");
                                      }
                                  }; 
+                                 Command current_task_cmd = new Command() {
+                                     @Override
+                                     public void menuSelected( MenuItem selectedItem) {
+                                         Window current_task_window = new Current_Task(current_user);
+                                         addWindow(current_task_window);
+                                     }
+                                 }; 
+                                 Command all_task_cmd = new Command() {
+                                     @Override
+                                     public void menuSelected( MenuItem selectedItem) {
+                                    	 if(current_project!=null){
+	                                         Window all_task_window = new All_Task();
+	                                         addWindow(all_task_window);
+                                    	 }
+                                    	 else Notification.show("Project is not created");
+                                     }
+                                 }; 
+                                 Command add_product_cmd = new Command() {
+                                     @Override
+                                     public void menuSelected( MenuItem selectedItem) {
+	                                         Window add_product_window = new Add_Product();
+	                                         addWindow(add_product_window);
+                                     }
+                                 }; 
+                                 Command delete_product_cmd = new Command() {
+                                     @Override
+                                     public void menuSelected( MenuItem selectedItem) {
+	                                         Window delete_product_window = new Delete_Product();
+	                                         addWindow(delete_product_window);
+                                     }
+                                 }; 
+                                 Command update_product_cmd = new Command() {
+                                     @Override
+                                     public void menuSelected( MenuItem selectedItem) {
+	                                         Window update_product_window = new Edit_Product();
+	                                         addWindow(update_product_window);
+                                     }
+                                 };
+                                 Command add_report_cmd = new Command() {
+                                     @Override
+                                     public void menuSelected( MenuItem selectedItem) {
+	                                         Window add_report_window = new Add_Report();
+	                                         addWindow(add_report_window);
+                                     }
+                                 };
                                  
                                  MenuBar settings = new MenuBar();
                                  MenuItem settingsMenu = settings.addItem("", null);
-                                 MenuItem projectMenu = settingsMenu.addItem("Project", current_project_cmd);
-                                 projectMenu.addItem("New Project", add_project_cmd);
-                                 projectMenu.addItem("Current Project", current_project_cmd);
-                                 projectMenu.addItem("Project Settings", setting_project_cmd);
-                                 projectMenu.addItem("Delete Project", delete_project_cmd);
                                  
-                                 MenuItem tasktMenu = settingsMenu.addItem("Task", null);
-                                 tasktMenu.addItem("New Task", add_task_cmd);
-                                 tasktMenu.addItem("All Task", null);
-                                 tasktMenu.addItem("Delete Task", delete_task_cmd);                                
-                                 
-                                 settingsMenu.setStyleName("icon-cog");
-                                 settingsMenu.addItem("Settings", cmd);
-                                 settingsMenu.addItem("Add User",add_user_cmd );
-                                 settingsMenu.addItem("Password",password_cmd);
-                                 settingsMenu.addSeparator();
-                                 settingsMenu.addItem("My Account", account_cmd);
-                                 addComponent(settings);
-                                 
+                                 if((current_user.getPosition().getTitle().toLowerCase().equals("admin"))){
+	                                 MenuItem projectMenu = settingsMenu.addItem("Project", current_project_cmd);
+	                                 
+	                                 projectMenu.addItem("New Project", add_project_cmd);
+	                                 projectMenu.addItem("Current Project", current_project_cmd);
+	                                 projectMenu.addItem("Project Settings", setting_project_cmd);
+	                                 projectMenu.addItem("Delete Project", delete_project_cmd);
+	                                 
+	                                 MenuItem productMenu = projectMenu.addItem("Product", update_product_cmd);
+	                                 productMenu.addItem("Create Product", add_product_cmd);
+	                                 productMenu.addItem("Update Product", update_product_cmd);
+	                                 productMenu.addItem("Delete Product", delete_product_cmd); 
+	                                 
+	                                 MenuItem reportMenu = productMenu.addItem("Report", null);
+	                                 reportMenu.addItem("Create Report", add_report_cmd);
+	                                 reportMenu.addItem("Update Report", null);
+	                                 reportMenu.addItem("Delete Report", null);
+	                                 
+	                                 MenuItem tasktMenu = settingsMenu.addItem("Task", all_task_cmd);
+	                                 tasktMenu.addItem("Create Task", add_task_cmd);
+	                                 tasktMenu.addItem("Tasks List", current_task_cmd);
+	                                 tasktMenu.addItem("All Tasks List", all_task_cmd);
+	                                 tasktMenu.addItem("Delete Task", delete_task_cmd);   
+	                                 
+	                                 settingsMenu.addSeparator();
+	                                 settingsMenu.setStyleName("icon-cog");
+	                                 MenuItem accountMenu = settingsMenu.addItem("My Account", account_cmd);
+	                                 accountMenu.addItem("Settings", account_cmd);
+	                                 accountMenu.addItem("Add User",add_user_cmd );
+	                                 accountMenu.addItem("Password",password_cmd);
+	                                	                                 
+                                 }
+                                 else{
+                                	 MenuItem projectMenu = settingsMenu.addItem("Project", current_project_cmd);
+	                                 
+	                                 MenuItem tasktMenu = settingsMenu.addItem("Task", current_task_cmd);
+	                                 tasktMenu.addItem("Create Task", add_task_cmd);
+	                                 tasktMenu.addItem("Tasks List", current_task_cmd);
+	                                 tasktMenu.addItem("Delete Task", delete_task_cmd);                                
+	                                 
+	                                 MenuItem productMenu = projectMenu.addItem("Product", update_product_cmd);
+	                                 productMenu.addItem("Create Product", add_product_cmd);
+	                                 productMenu.addItem("Update Product", update_product_cmd);
+	                                 productMenu.addItem("Delete Product", delete_product_cmd);  
+	                                 
+	                                 MenuItem reportMenu = productMenu.addItem("Report", null);
+	                                 reportMenu.addItem("Create Report", add_report_cmd);
+	                                 reportMenu.addItem("Update Report", null);
+	                                 reportMenu.addItem("Delete Report", null);
+	                                 
+	                                 settingsMenu.setStyleName("icon-cog");
+	                                 settingsMenu.addSeparator();
+	                                 MenuItem accountMenu = settingsMenu.addItem("My Account", account_cmd);
+	                                 accountMenu.addItem("Settings", account_cmd);
+	                                 accountMenu.addItem("Password",password_cmd);	                                 
+                                 }
+                                 addComponent(settings);                                
                                  Button exit = new NativeButton("Exit");
                                  exit.addStyleName("icon-cancel");
                                  exit.setDescription("Sign Out");
@@ -525,14 +634,24 @@ public class LoginUI extends UI {
 	        viewNameToMenuButton.get("/dashboard").setCaption("Dashboard");
 	 }
 	
-	private void refresh(Window window){
+	private void refresh_project(Window window){
 		 window.addCloseListener(new CloseListener() {
 			
 			@Override
 			public void windowClose(CloseEvent e) {
 				// TODO Auto-generated method stub
 				session.refresh(current_project);
-                session.refresh(current_user);
+			}
+		});
+	 }
+	
+	private void refresh_user(Window window){
+		 window.addCloseListener(new CloseListener() {
+			
+			@Override
+			public void windowClose(CloseEvent e) {
+				// TODO Auto-generated method stub
+               session.refresh(current_user);
 			}
 		});
 	 }

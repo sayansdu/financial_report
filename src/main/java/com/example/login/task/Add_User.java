@@ -156,7 +156,7 @@ public class Add_User extends Window {
 																				new_pos.setTitle(capitalize(add_pos.getValue().trim()));
 																				Positions.addPosition(new_pos);
 																				updatePosition();
-																				System.out.println("position created "+new_pos.getTitle());
+																				
 																				pos.close();
 																			}
 																		}
@@ -203,7 +203,7 @@ public class Add_User extends Window {
                 addComponent(cancel);
                 setExpandRatio(cancel, 1);
                 
-                Button ok = new Button("Do it");
+                Button ok = new Button("Create");
                 ok.addClickListener(new ClickListener() {
                     @Override
                     public void buttonClick(ClickEvent event) {

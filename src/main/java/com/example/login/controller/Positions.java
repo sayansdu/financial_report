@@ -13,8 +13,14 @@ public class Positions {
 	public static List<Position> getPositions(){
 		 Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		 session.beginTransaction();
-		 List<Position> list =  session.createCriteria(Position.class).list();
-		 session.getTransaction().commit();	 
+		 List<Position> list =  session.createCriteria(Position.class).list();		 
+		 session.getTransaction().commit();	
+		 for (Position position : list) {
+				if(position.getTitle().toLowerCase().equals("admin")) {
+					list.remove(position); 
+					break;
+				}
+		}
 		 return list;
 	 }
 	

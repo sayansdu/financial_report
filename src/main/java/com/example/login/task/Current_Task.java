@@ -1,101 +1,94 @@
 package com.example.login.task;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.hibernate.Session;
 
 import com.example.login.controller.Tasks;
 import com.example.login.entity.Project;
 import com.example.login.entity.Student;
 import com.example.login.entity.Task;
-import com.example.login.util.HibernateUtil;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
-import com.vaadin.server.ThemeResource;
-import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.themes.Reindeer;
 
 @SuppressWarnings("serial")
-public class Delete_Task extends Window{
+public class Current_Task extends Window{
 	VerticalLayout main;
 	VerticalLayout top;
-	VerticalLayout tasks_layout;
 	HorizontalLayout bottom;
+	FormLayout task_layout;
 	ComboBox projects;
+	Panel main_panel;
 	
 	private Student current_user;
-	private Project current_project;
 	private Set<Project> projects2;
-	private Set<Task> task_list = new HashSet<Task>();
+	private Set<Task> tasks = new HashSet<Task>();
 	
-	public Delete_Task(Student username, Project project){
+	public Current_Task(Student username){
 		current_user = username;
-		current_project = project;
+		projects2 = current_user.getProjects();
 		for (Task task : Tasks.getTasks()) {
 			if(task.getStudent().getId() == current_user.getId())
-				if(task.getProject().getId()== (current_project.getId()))
-					task_list.add(task);
-				
+				tasks.add(task);
 		}
 		
-		setCaption("Delete Task");
+		setCaption("User Tasks");
 		setModal(true);
 		setResizable(false);
-        addStyleName("edit-dashboard");              
+        addStyleName("edit-dashboard"); 
         setContent(main = new VerticalLayout());
         
-        projects2 = current_user.getProjects();
         projects = new ComboBox();
-        projects.setCaption("Project List: ");
+        projects.setCaption("Select By Project: ");
         projects.setImmediate(true);
         projects.setTextInputAllowed(false);
         projects.setNullSelectionAllowed(false);
+        
+        projects.addItem("All task");
         for (Project proj : projects2) {
 			projects.addItem(proj);
 		}
+		
         projects.addValueChangeListener(new ValueChangeListener() {
 			
 			@Override
 			public void valueChange(ValueChangeEvent event) {
 				// TODO Auto-generated method stub
-				current_project = (Project) projects.getValue();
-				task_list.clear();
-				for (Task task : Tasks.getTasks()) {
-					if(task.getStudent().getId() == current_user.getId())
-						if(task.getProject().getId()== (current_project.getId()))
-							task_list.add(task);
-						
-				}
-				update();
+				if(projects.getValue() == "All task") update("All task");
+				else  update((Project)projects.getValue());
 			}
-		});
+		});      
         
+        task_layout = new FormLayout();
+		task_layout.setCaption("Task List: ");
+		task_layout.setSpacing(true);
+		update("all task");
+		
         main.addComponent(top = new VerticalLayout(){
         	{
-        		setWidth("500px");
         		setMargin(true);
         		setSpacing(true);
-        		addComponent(new FormLayout(){
+        		setWidth("500px");
+        		addComponent(new Panel(){
         			{
-        				setSpacing(true);
-        				addComponent(projects);
-        				tasks_layout = new VerticalLayout();
-        				update();
-        				addComponent(tasks_layout);
-        				
+        				setHeight("500px");
+        				setContent(new FormLayout(){
+		        			{
+				        		addComponent(projects);		        		
+				        		addComponent(task_layout);
+		        			}
+	        			});
         			}
         		});
         	}
@@ -125,44 +118,65 @@ public class Delete_Task extends Window{
 				});
         	}
         });
-        
 	}
 	
-	private void update(){
-		tasks_layout.removeAllComponents();
-		for (final Task task : task_list) {
-			tasks_layout.addComponent(new HorizontalLayout(){
+	private void update(String all){
+		task_layout.removeAllComponents();
+		for (final Task task : tasks) {
+			task_layout.addComponent(new FormLayout(){
 				{
-					addComponent(new Label("Desc: "+task.getText().substring(0, 15)+" ...&nbsp;&nbsp;"+
-										   "To: "+(new ArrayList<Student>(task.getTo()).get(0)+"&nbsp;" ), ContentMode.HTML ));
-					addComponent(new Button(){
+					setSpacing(false);
+					setMargin(false);
+					addComponent(new Label(task.getText()){
 						{
-							setStyleName(Reindeer.BUTTON_LINK);
-							setIcon(new ThemeResource("img/delete-icon2.png"));
-							addClickListener(new ClickListener() {
-								
-								@Override
-								public void buttonClick(ClickEvent event) {
-									// TODO Auto-generated method stub
-									Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-									session.beginTransaction();
-									session.delete(task);
-									session.getTransaction().commit();
-									task_list.clear();
-									for (Task task : Tasks.getTasks()) {
-										if(task.getStudent().getId() == current_user.getId())
-											if(task.getProject().getId()== (current_project.getId()))
-												task_list.add(task);
-											
-									}
-									update();
-									
-								}
-							});
+							setCaption("Description: ");
 						}
 					});
+					addComponent(new Label(){
+						{
+							setCaption("Receivers: ");
+							String a = "";
+							for (Student student : task.getTo()) {
+								a+=student.getName()+" ";
+							}
+							setValue(a);
+						}
+					});
+					
 				}
 			});
 		}
+		
+	}
+	
+	private void update(Project project){
+		task_layout.removeAllComponents();
+		for (final Task task : tasks) {
+			if(task.getProject().getId() == project.getId()){
+				task_layout.addComponent(new FormLayout(){
+					{
+						setSpacing(false);
+						setMargin(false);
+						addComponent(new Label(task.getText()){
+							{
+								setCaption("Description: ");
+							}
+						});
+						addComponent(new Label(){
+							{
+								setCaption("Receivers: ");
+								String a = "";
+								for (Student student : task.getTo()) {
+									a+=student.getName()+" ";
+								}
+								setValue(a);
+							}
+						});
+						
+					}
+				});
+			}
+		}
+		
 	}
 }

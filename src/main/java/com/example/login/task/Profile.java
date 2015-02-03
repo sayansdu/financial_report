@@ -20,6 +20,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.Upload.Receiver;
@@ -40,7 +41,7 @@ public class Profile extends Window {
 	FormLayout form;
 	TextField tf;
 	TextField tf2;
-	TextField tf3;
+	PasswordField tf3;
 	Label sub_text;
 	Button remove;
 	
@@ -69,7 +70,7 @@ public class Profile extends Window {
         				tf2.setValue(current_user2.getEmail());
         				addComponent(tf2);
         				
-        				tf3 = new TextField("Password");
+        				tf3 = new PasswordField("Password");
         				addComponent(tf3);
         				sub_text = new Label("enter password to edit profile");
         				sub_text.addStyleName("profile_sub");
@@ -160,6 +161,7 @@ public class Profile extends Window {
                     	}
                     	else{
                     		sub_text.setValue("you password is incorrect");
+                    		sub_text.setStyleName("position_error");
                     	}
                     }
                 });
@@ -212,3 +214,14 @@ public class Profile extends Window {
 		
 	}
 }
+
+
+
+
+
+
+
+
+
+
+

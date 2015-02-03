@@ -1,16 +1,22 @@
-package com.example.login.task;
+package com.example.login.task.product;
 
+import java.util.HashSet;
 import java.util.Set;
 
+import org.hibernate.Session;
+
+import com.example.login.LoginUI;
+import com.example.login.controller.Projects;
+import com.example.login.entity.Product;
 import com.example.login.entity.Project;
 import com.example.login.entity.Student;
+import com.example.login.util.HibernateUtil;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
-import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -18,32 +24,36 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.themes.Reindeer;
 
 @SuppressWarnings("serial")
-public class Current_Project extends Window{
+public class Delete_Product extends Window{
 	VerticalLayout main;
 	VerticalLayout top;
+	VerticalLayout products_layout;
+	HorizontalLayout product_layout;
 	HorizontalLayout bottom;
-	HorizontalLayout description;
-	HorizontalLayout title;
-	HorizontalLayout users;
-	
 	ComboBox projects;
 	
-	private Project current_project;
 	private Student current_user;
+	private static  Project current_project;
 	private Set<Project> projects2;
+	private Set<Product> products = new HashSet<Product>();
 	
-	public Current_Project(Project pro, Student user){
-		current_project = pro;
-		current_user = user;
-		setCaption("Current Project");
+	public Delete_Product(){
+		current_user = LoginUI.current_user;
+		if(current_user.getPosition().getTitle().toLowerCase().equals("admin"))
+			projects2 = new HashSet<Project>(Projects.getProjects());
+		else
+			projects2 = current_user.getProjects();
+		
+		setCaption("Delete Product");
 		setModal(true);
 		setResizable(false);
         addStyleName("edit-dashboard");              
         setContent(main = new VerticalLayout());
         
-        projects2 = current_user.getProjects();
         projects = new ComboBox();
         projects.setCaption("Project List: ");
         projects.setImmediate(true);
@@ -53,36 +63,34 @@ public class Current_Project extends Window{
         for (Project proj : projects2) {
 			projects.addItem(proj);
 		}
+        
         projects.addValueChangeListener(new ValueChangeListener() {
 			
 			@Override
 			public void valueChange(ValueChangeEvent event) {
 				// TODO Auto-generated method stub
 				current_project = (Project) projects.getValue();
+				products = current_project.getProducts();
 				update();
 			}
 		});
+        
         main.addComponent(top = new VerticalLayout(){
         	{
+        		setWidth("300px");
         		setMargin(true);
         		setSpacing(true);
         		addComponent(new FormLayout(){
         			{
-        				description = new HorizontalLayout(); description.setCaption("Description: ");
-        				title = new HorizontalLayout();       title.setCaption("Project Title: "); 				
-        				users = new HorizontalLayout();		  users.setCaption("Users: ");
-        				update();
+        				setSpacing(true);
         				addComponent(projects);
-        				addComponent(title);
-        				addComponent(description);
-        				addComponent(users);
         				
-        				
+        				products_layout = new VerticalLayout();
+        				addComponent(products_layout);
         			}
         		});
         	}
         });
-        
         main.addComponent(bottom = new HorizontalLayout(){
         	{
         		setMargin(true);
@@ -107,20 +115,39 @@ public class Current_Project extends Window{
 				});
         	}
         });
+        
+	}
+
+	private void update(){
+		products_layout.removeAllComponents();
+		for (final Product product : products ) {
+			products_layout.addComponent(new HorizontalLayout(){
+				{
+					setSpacing(true);
+					addComponent(new Label(product.toString()));
+					addComponent(new Button(){
+						{
+							setStyleName(Reindeer.BUTTON_LINK);
+							setIcon(new ThemeResource("img/delete-icon2.png"));
+							addClickListener(new ClickListener() {
+								
+								@Override
+								public void buttonClick(ClickEvent event) {
+									// TODO Auto-generated method stub
+									Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+									session.beginTransaction();
+									session.delete(product);
+									session.getTransaction().commit();
+									products.remove(product);
+									update();
+									
+								}
+							});
+						}
+					});
+				}
+			});
+		}
 	}
 	
-	private void update(){
-		description.removeAllComponents();
-		title.removeAllComponents();
-		users.removeAllComponents();
-		description.addComponent(new Label("<b>"+current_project.getDescription()+"</b>", ContentMode.HTML));
-		title.addComponent(new Label("<b>"+current_project.getName()+"</b>", ContentMode.HTML));
-		users.addComponent(new VerticalLayout(){
-			{
-				for (Student student : current_project.getUser()) {
-					addComponent(new Label("<b>"+student.toString()+"</b>", ContentMode.HTML));
-				}
-			}
-		});
-	}
 }

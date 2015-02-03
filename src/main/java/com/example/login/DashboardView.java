@@ -1,11 +1,18 @@
 package com.example.login;
 
 import java.text.DecimalFormat;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.hibernate.Session;
 
 import com.example.login.TopSixTheatersChart;
 import com.example.login.TopGrossingMoviesChart;
-import com.example.login.data.Generator;
 import com.example.login.data.DataProvider;
+import com.example.login.entity.Project;
+import com.example.login.entity.Student;
+import com.example.login.entity.Task;
+import com.example.login.util.HibernateUtil;
 import com.vaadin.data.Property;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
@@ -34,13 +41,24 @@ import com.vaadin.ui.Table.RowHeaderMode;
 
 
 
+@SuppressWarnings("serial")
 public class DashboardView extends VerticalLayout implements View{
 	Table t;	
 	Window notifications;
+	Student current_user;
+	Project current_project;
+	Set<Task> tasks = new HashSet<Task>();
 	
 	public DashboardView() {
+		current_user = LoginUI.current_user;
+		current_project = LoginUI.current_project;
+		for (Task task : current_user.getReceived()) {			
+				if(task.isReaded()==false)
+					tasks.add(task);			
+		}
+		
 		DataProvider dataProvider = new DataProvider();
-		dataProvider.loadMoviesData();	
+		dataProvider.loadMoviesData();		
 		
 		setSizeFull();
         addStyleName("dashboard-view");
@@ -56,12 +74,13 @@ public class DashboardView extends VerticalLayout implements View{
         top.addComponent(title);
         top.setComponentAlignment(title, Alignment.MIDDLE_LEFT);
         top.setExpandRatio(title, 1); 
-        
-        Button notify = new Button("2");
-        notify.setDescription("Notifications (2 unread)");
+        Button notify;
+        if(!tasks.isEmpty())  { notify = new Button((tasks.size())+"");  notify.addStyleName("unread"); }
+        else 				  notify = new Button("");
+        notify.setDescription("Unread tasks");
         notify.addStyleName("borderless");
         notify.addStyleName("notifications");
-        notify.addStyleName("unread");
+        
         notify.addStyleName("icon-only");
         notify.addStyleName("icon-bell");
         notify.addClickListener(new ClickListener() {
@@ -178,7 +197,7 @@ public class DashboardView extends VerticalLayout implements View{
         
         row.addComponent(createPanel(new TopGrossingMoviesChart()));
         TextArea notes = new TextArea("Notes");
-        notes.setValue("Remember to:\n Add graph to SalesView \n Connect to database\n Create a new data\n Change the style");
+        notes.setValue("Remember to:\n· Add graph to SalesView \n· Connect to database\n· Create a new data\n· Change the style");
         notes.setSizeFull();
         CssLayout panel = (CssLayout) createPanel(notes);
         panel.addStyleName("notes");
@@ -224,10 +243,7 @@ public class DashboardView extends VerticalLayout implements View{
 	
 	@Override
 	public void enter(ViewChangeEvent event) {
-		// TODO Auto-generated method stub
-		DataProvider dataProvider = new DataProvider();
-		dataProvider.loadMoviesData();		
-      //  t.setContainerDataSource(dataProvider.getRevenueByTitle());
+		// TODO Auto-generated method stubs
 		
 	}
 
@@ -246,20 +262,18 @@ public class DashboardView extends VerticalLayout implements View{
         notifications.setPositionY(event.getClientY() - event.getRelativeY());
         notifications.setCloseShortcut(KeyCode.ESCAPE, null);
 
-        Label label = new Label(
-                "<hr><b>"
-                        + "Me"
-//                        + " "
-//                        + Generator.randomLastName()
-                        + " created a new project</b><br><span>and test it</span><br>"
-                      , ContentMode.HTML);
-        l.addComponent(label);
+        for (Task task : tasks) {
+        	Label label = new Label(
+                    "<hr><b>From: " + task.getStudent()+"</b><br>"
+                     + "<span>Task: " + task.getText() +"</span><br>" , ContentMode.HTML);
+        	l.addComponent(label);
+        	task.setReaded(true);
+        	Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        	session.beginTransaction();
+        	session.update(task);
+        	session.getTransaction().commit();
+		}
 
-        label = new Label("<hr><b>" + "Manar" + " "
-                + "Kurmanov"
-                + " create new class</b><br><span>to dashboard</span><br>"
-                , ContentMode.HTML);
-        l.addComponent(label);
     }
 
 	private Component createPanel(Component content) {

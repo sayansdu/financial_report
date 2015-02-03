@@ -20,11 +20,11 @@ import com.vaadin.ui.CustomTable.RowHeaderMode;
 
 public class TransactionsView extends VerticalLayout implements View {
 	 FilterTable filterTable;
-	 IndexedContainer container = new IndexedContainer();
+	    IndexedContainer container = new IndexedContainer();
 	    
-	 enum State {
-	     CREATED, PROCESSING, PROCESSED, FINISHED;
-	 }
+	    enum State {
+	        CREATED, PROCESSING, PROCESSED, FINISHED;
+	    }
 	
 	@Override
 	public void enter(ViewChangeEvent event) {
@@ -38,14 +38,14 @@ public class TransactionsView extends VerticalLayout implements View {
 			hr.setWidth("100%");
 			hr.setMargin(true);
 			
-			ExcelExporter excelExporter = new ExcelExporter(filterTable);
+			ExcelExporter excelExporter = new ExcelExporter();	     
 			excelExporter.setDateFormat("yyyy-MM-dd");
-//			excelExporter.setContainerToBeExported(filterTable);
+			excelExporter.setContainerToBeExported(filterTable);	       
 	        excelExporter.setCaption("Export as Excel");  
 			hr.addComponent(excelExporter);
 			
-			PdfExporter pdf = new PdfExporter(filterTable);
-//			pdf.setContainerToBeExported(filterTable);
+			PdfExporter pdf = new PdfExporter();
+			pdf.setContainerToBeExported(filterTable);
 			pdf.setHeader("pdf-file");
 
 			pdf.setCaption("Export as PDF");  

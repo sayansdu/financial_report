@@ -22,7 +22,8 @@ public class Project {
 	private String description;
 	private Set<Student> user;
 	private Set<Task> tasks;
-	
+	private Set<Product> products;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	public long getId() {
@@ -62,6 +63,14 @@ public class Project {
 	}
 	public void setTask(Set<Task> tasks) {
 		this.tasks = tasks;
+	}
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "project" )
+	public Set<Product> getProducts() {
+		return products;
+	}
+	public void setProducts(Set<Product> products) {
+		this.products = products;
 	}
 	
 	public String toString(){

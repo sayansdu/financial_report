@@ -179,8 +179,7 @@ public class Setting_Project extends Window {
 		description.setValue(current_project.getDescription());
 		title.setValue(current_project.getName());
 		users_layout.addComponent(new VerticalLayout(){
-			{
-				setSpacing(true);
+			{				
 				for (final Student student : project_users) {
 					addComponent(new HorizontalLayout(){
 						{
@@ -203,6 +202,7 @@ public class Setting_Project extends Window {
 						}
 					});
 				}
+				addComponent(new Label());
 				addComponent(new HorizontalLayout(){
 					{
 						setSpacing(true);

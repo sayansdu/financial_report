@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import org.hibernate.Session;
-import org.hibernate.exception.SQLGrammarException;
 
 import com.example.login.controller.Projects;
 import com.example.login.controller.Tasks;
@@ -18,7 +17,7 @@ public class TaskTest {
 	
 	public static void main(String[] args){
 
-			delete();
+			getTasks();
 	}
 
 	private static void addTask(){
@@ -26,16 +25,16 @@ public class TaskTest {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		session.beginTransaction();
 		Task task = new Task();
-		Project project = Projects.getByName("students").get(0);
+		Project project = Projects.getByName("houses").get(0);
 			System.out.println(project.getName());
 		Student from = Users.get_user_by_name("hp");
 			System.out.println(from.getName());
-		Set<Student> to = Users.get_by_name("user");
+		Set<Student> to = Users.get_by_name("stive");
 
 		task.setProject(project);
 		task.setStudent(from);
 		task.setTo(to);		
-		task.setText("select 10 students");
+		task.setText("flat analysis in akkkent");
 		task.setDone(false);
 		task.setReaded(false);
 		
@@ -75,6 +74,18 @@ public class TaskTest {
 		Task receiver = tasks.get(0);
 		System.out.println("id: "+receiver.getId()+" project: "+receiver.getProject()+" from: "+receiver.getStudent() );
 		session.delete(receiver);
+		session.getTransaction().commit();
+		session.close();
+	}
+	
+	private static void check_sender(){
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		session.beginTransaction();
+		Student temp = Users.get_user_by_name("hp");
+		Set<Task> tasks = temp.getReceived();
+		for (Task task : tasks) {
+			System.out.println(task.getText()+" receiver:"+ task.getStudent());
+		}
 		session.getTransaction().commit();
 		session.close();
 	}

@@ -76,6 +76,8 @@ public class Add_To_Project extends Window{
                 			Project current = (Project) project.getValue();
                 			current.getUser().add(current_user2);
                 			session.update(current);
+                			current_user2.setCurrent_project(current);
+                			session.update(current_user2);
                 			session.getTransaction().commit();
                 			close();
                 		}
