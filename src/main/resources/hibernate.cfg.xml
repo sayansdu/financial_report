@@ -20,5 +20,8 @@
         <mapping class="com.example.login.entity.Position"/>
         <mapping class="com.example.login.entity.Project"/>
         <mapping class="com.example.login.entity.Task"/>
+        <mapping class="com.example.login.entity.Product"/>
+        <mapping class="com.example.login.entity.Month"/>
+        <mapping class="com.example.login.entity.Report"/>
     </session-factory>
 </hibernate-configuration>

@@ -38,13 +38,13 @@ public class TransactionsView extends VerticalLayout implements View {
 			hr.setWidth("100%");
 			hr.setMargin(true);
 			
-			ExcelExporter excelExporter = new ExcelExporter();	     
+			ExcelExporter excelExporter = new ExcelExporter(filterTable);
 			excelExporter.setDateFormat("yyyy-MM-dd");
 			excelExporter.setContainerToBeExported(filterTable);	       
 	        excelExporter.setCaption("Export as Excel");  
 			hr.addComponent(excelExporter);
 			
-			PdfExporter pdf = new PdfExporter();
+			PdfExporter pdf = new PdfExporter(filterTable);
 			pdf.setContainerToBeExported(filterTable);
 			pdf.setHeader("pdf-file");
 

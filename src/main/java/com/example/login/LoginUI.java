@@ -88,8 +88,8 @@ public class LoginUI extends UI {
 	private Transferable items;
 	private Navigator nav;
 	public String user_name = "";
-	public static Student current_user=null;
-	public static Project current_project=null;
+	public static Student current_user = null;
+	public static Project current_project = null;
 	boolean is_user = false;
 	boolean autoCreateReport = false;
 	
@@ -124,8 +124,8 @@ public class LoginUI extends UI {
     	helpManager.closeAll();
         HelpOverlay w = helpManager
                 .addOverlay(
-                        "Welcome to the Financial Analysis",
-                        "<p>This application is demo version, it only demonstrates an application built</p>",
+                        "Welcome to the Financial Report",
+                        "<p>To sign in, you can just enter admin/admin</p>",
                         "login");
         w.center();
         addWindow(w);
@@ -211,7 +211,7 @@ public class LoginUI extends UI {
 						loginPanel.removeComponent(loginPanel.getComponent(2));
 					}
 					Label error = new Label(
-                            "Wrong username or password. <span>Hint: try user and user</span>",
+                            "Wrong username or password. Try again.",
                             ContentMode.HTML);
                     error.addStyleName("error");
                     error.setSizeUndefined();
@@ -655,4 +655,8 @@ public class LoginUI extends UI {
 			}
 		});
 	 }
+
+    public static Student getCurrentUser(){
+        return current_user;
+    }
 }

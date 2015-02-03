@@ -4,6 +4,8 @@
 .idea/*
 target/
 .settings/
+src/main/webapp/VAADIN/widgetsets/*
+src/main/webapp/VAADIN/widgetsets
 .project
 .classpath
 out/

@@ -99,13 +99,12 @@ public class Profile extends Window {
 											
 											@Override
 											public void buttonClick(ClickEvent event) {
-												// TODO Auto-generated method stub
 												Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 									   		 	session.beginTransaction();
 									   		 	current_user2.setLogo(null);
 									   		 	session.update(current_user2);
 									   		 	session.getTransaction().commit();	
-												image.setSource((new FileResource(new File("C:\\tmp\\uploaded\\default-logo.png"))));											
+												image.setSource((new ThemeResource("img/default/blue-user-icon.png")));
 											}
 										});
         							}
@@ -117,7 +116,7 @@ public class Profile extends Window {
         				image.setWidth("150px");
         				image.setHeight("150px");
         				addComponent(image);
-        				if(current_user2.getLogo()==null) image.setSource(new FileResource(new File("C:\\tmp\\uploaded\\default-logo.png")));
+        				if(current_user2.getLogo()==null) image.setSource(new ThemeResource("img/default/blue-user-icon.png"));
         				else 							 image.setSource(new FileResource(new File(current_user2.getLogo())));
         				
         				final ImageUploader uploader = new ImageUploader(); 

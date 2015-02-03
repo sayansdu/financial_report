@@ -67,7 +67,7 @@ public class Edit_Product extends Window{
 			
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				// TODO Auto-generated method stub
+
 				product_list =((Project) projects.getValue()).getProducts();
 				update();
 			}
@@ -100,7 +100,7 @@ public class Edit_Product extends Window{
 											
 											@Override
 											public void buttonClick(ClickEvent event) {
-												// TODO Auto-generated method stub
+
 												String product_name = name.getValue();
 												Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 												session.beginTransaction();
@@ -140,7 +140,6 @@ public class Edit_Product extends Window{
 					
 					@Override
 					public void buttonClick(ClickEvent event) {
-						// TODO Auto-generated method stub
 						close();
 					}
 				});

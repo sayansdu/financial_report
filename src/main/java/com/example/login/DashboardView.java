@@ -197,7 +197,7 @@ public class DashboardView extends VerticalLayout implements View{
         
         row.addComponent(createPanel(new TopGrossingMoviesChart()));
         TextArea notes = new TextArea("Notes");
-        notes.setValue("Remember to:\n· Add graph to SalesView \n· Connect to database\n· Create a new data\n· Change the style");
+        notes.setValue("Remember to:\n Add graph to SalesView \n Connect to database\n Create a new data\n Change the style");
         notes.setSizeFull();
         CssLayout panel = (CssLayout) createPanel(notes);
         panel.addStyleName("notes");

@@ -48,7 +48,7 @@ public class Add_Product extends Window{
         addStyleName("edit-dashboard");              
         setContent(main = new VerticalLayout());
         
-		current_user = LoginUI.current_user;
+		current_user = LoginUI.getCurrentUser();
 		projects = new ComboBox("Project List");
         projects.setImmediate(true);
         projects.setNullSelectionAllowed(false);
