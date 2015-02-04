@@ -4,6 +4,7 @@ package com.example.login.task;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.example.login.LoginUI;
 import org.hibernate.Session;
 
 import com.example.login.entity.Project;
@@ -71,7 +72,7 @@ public class Add_Task extends Window{
 			
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				// TODO Auto-generated method stub
+
 				current_project = (Project) projects.getValue();				
 				ta.setValue("");
 				selected_users.clear();
@@ -158,11 +159,16 @@ public class Add_Task extends Window{
 					
 					@Override
 					public void buttonClick(ClickEvent event) {
-						// TODO Auto-generated method stub
+
 						if(!ta.getValue().isEmpty()){
 							if(!selected_users.isEmpty()){
-								Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-								session.beginTransaction();
+                                Session session = LoginUI.getCurrentSession();
+                                if(session.getTransaction() == null){
+                                    session.beginTransaction();
+                                }
+                                else
+                                    session.getTransaction().begin();
+
 								Task new_task = new Task();
 								new_task.setProject(current_project);
 								new_task.setStudent(current_user);

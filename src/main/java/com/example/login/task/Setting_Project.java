@@ -213,7 +213,7 @@ public class Setting_Project extends Window {
 									
 									@Override
 									public void buttonClick(ClickEvent event) {
-										// TODO Auto-generated method stub
+
 										Student temp = (Student) users.getValue();
 										project_users.add(temp);
 										update();

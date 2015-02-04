@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.example.login.LoginUI;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
@@ -15,8 +16,13 @@ import com.example.login.util.HibernateUtil;
 public class Users {
 	
 	public static ArrayList<Student> getUsers(){
-		 Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-		 session.beginTransaction();
+        Session session = LoginUI.getCurrentSession();
+        if(session.getTransaction() == null){
+            session.beginTransaction();
+        }
+        else
+            session.getTransaction().begin();
+
 		 ArrayList<Student> list = (ArrayList<Student>) session.createCriteria(Student.class).list();
 		 session.getTransaction().commit();	 
 		 for (Student student : list) {
@@ -29,8 +35,13 @@ public class Users {
 	 }
 	
 	public boolean is_it_user(String user, String password){
-		 Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-		 session.beginTransaction();
+        Session session = LoginUI.getCurrentSession();
+        if(session.getTransaction() == null){
+            session.beginTransaction();
+        }
+        else
+            session.getTransaction().begin();
+
 		 ArrayList<Student> list = (ArrayList<Student>) session.createCriteria(Student.class).list();
 		 for (Student student : list) {
 			if(student.getName().equals(user.trim()) && student.getPassword().equals(password.trim())){
@@ -44,8 +55,13 @@ public class Users {
 	 }
 	
 	public static Student get_user_by_name(String name){
-		 Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-		 session.beginTransaction();
+        Session session = LoginUI.getCurrentSession();
+        if(session.getTransaction() == null){
+            session.beginTransaction();
+        }
+        else
+            session.getTransaction().begin();
+
 		 Student user = new Student();
 		 ArrayList<Student> list = (ArrayList<Student>) session.createCriteria(Student.class).list();
 		 for (Student student : list) {
@@ -56,8 +72,13 @@ public class Users {
 	}
 	
 	public static Set<Student> get_by_name(String name){
-		 Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-		 session.beginTransaction();
+        Session session = LoginUI.getCurrentSession();
+        if(session.getTransaction() == null){
+            session.beginTransaction();
+        }
+        else
+            session.getTransaction().begin();
+
 		 Set<Student> list =  new HashSet<Student>(  session.createCriteria(Student.class).add(Restrictions.eq("name",name)).list() );
 		 session.getTransaction().commit();	
 		 return list;

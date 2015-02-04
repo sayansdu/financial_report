@@ -1,5 +1,6 @@
 package com.example.login.task;
 
+import com.example.login.LoginUI;
 import org.hibernate.Session;
 
 import com.example.login.entity.Student;
@@ -81,15 +82,20 @@ public class Password extends Window {
                     public void buttonClick(ClickEvent event) {
                     	if( (pas1.getValue().equals(current_user2.getPassword())) && (pas2.getValue().equals(pas3.getValue())))
                     	{
-                    		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-	    		   		 	session.beginTransaction();
+                    		Session session = LoginUI.getCurrentSession();
+	    		   		 	if(session.getTransaction() == null){
+                                session.beginTransaction();
+                            }
+                            else
+                                session.getTransaction().begin();
+
 	    		   		 	current_user2.setPassword(pas2.getValue());
 	    		   		 	session.update(current_user2);
-	    		    		 	session.getTransaction().commit();
+	    		    		session.getTransaction().commit();
 	                        close();
                     	}
                     	else{
-                    		sub_text.setValue("Password is incorrect, try againn");
+                    		sub_text.setValue("Password is incorrect, try again");
                     	}
                     }
                 });

@@ -2,6 +2,7 @@ package com.example.login.task;
 
 import java.util.ArrayList;
 
+import com.example.login.LoginUI;
 import org.hibernate.Session;
 
 import com.example.login.controller.Projects;
@@ -71,8 +72,13 @@ public class Add_To_Project extends Window{
                 	@Override
 					public void buttonClick(ClickEvent event) {
                 		if(project.isValid()){
-                			Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-                			session.beginTransaction();
+                            Session session = LoginUI.getCurrentSession();
+                            if(session.getTransaction() == null){
+                                session.beginTransaction();
+                            }
+                            else
+                                session.getTransaction().begin();
+
                 			Project current = (Project) project.getValue();
                 			current.getUser().add(current_user2);
                 			session.update(current);

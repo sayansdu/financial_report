@@ -133,9 +133,13 @@ public class Delete_Product extends Window{
 								
 								@Override
 								public void buttonClick(ClickEvent event) {
-									// TODO Auto-generated method stub
-									Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-									session.beginTransaction();
+                                    Session session = LoginUI.getCurrentSession();
+                                    if(session.getTransaction() == null){
+                                        session.beginTransaction();
+                                    }
+                                    else
+                                        session.getTransaction().begin();
+
 									session.delete(product);
 									session.getTransaction().commit();
 									products.remove(product);

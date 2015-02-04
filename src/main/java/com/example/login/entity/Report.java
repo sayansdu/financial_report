@@ -87,7 +87,7 @@ public class Report {
 	@Override
 	public String toString() {
 		return "Report [year=" + year + ", month=" + month + ", amount="
-				+ amount + ", sold_amount=" + sold_amount + ", price=" + price
-				+ ", cost_price=" + cost_price + "]";
+				+ amount + ", sold_amount=" + sold_amount  + ", cost_price=" + cost_price
+                + ", price=" + price + "]";
 	}
 }

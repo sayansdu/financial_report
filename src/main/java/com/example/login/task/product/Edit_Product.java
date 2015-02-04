@@ -102,10 +102,15 @@ public class Edit_Product extends Window{
 											public void buttonClick(ClickEvent event) {
 
 												String product_name = name.getValue();
-												Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-												session.beginTransaction();
-													current_product.setName(product_name);
-													session.update(current_product);
+                                                Session session = LoginUI.getCurrentSession();
+                                                if(session.getTransaction() == null){
+                                                    session.beginTransaction();
+                                                }
+                                                else
+                                                    session.getTransaction().begin();
+
+                                                current_product.setName(product_name);
+                                                session.update(current_product);
 												session.getTransaction().commit();
 												product_list =((Project) projects.getValue()).getProducts();
 												update(); 

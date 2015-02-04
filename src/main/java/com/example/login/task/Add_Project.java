@@ -180,9 +180,13 @@ public class Add_Project extends Window{
 							if(!ta.getValue().isEmpty()){
 								if(!selected_users.isEmpty()){
 									Project project = new Project();
-									
-									Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-									session.beginTransaction();
+
+                                    Session session = LoginUI.getCurrentSession();
+                                    if(session.getTransaction() == null){
+                                        session.beginTransaction();
+                                    }
+                                    else
+                                        session.getTransaction().begin();
 									
 									project.setName(tf.getValue().trim());
 									project.setDescription(ta.getValue().trim());

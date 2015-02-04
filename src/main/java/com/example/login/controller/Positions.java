@@ -3,6 +3,7 @@ package com.example.login.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.login.LoginUI;
 import org.hibernate.Session;
 
 import com.example.login.entity.Position;
@@ -11,8 +12,13 @@ import com.example.login.util.HibernateUtil;
 public class Positions {
 	
 	public static List<Position> getPositions(){
-		 Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-		 session.beginTransaction();
+        Session session = LoginUI.getCurrentSession();
+        if(session.getTransaction() == null){
+            session.beginTransaction();
+        }
+        else
+            session.getTransaction().begin();
+
 		 List<Position> list =  session.createCriteria(Position.class).list();		 
 		 session.getTransaction().commit();	
 		 for (Position position : list) {
@@ -25,8 +31,13 @@ public class Positions {
 	 }
 	
 	public Position get_user_by_name(String name){
-		 Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-		 session.beginTransaction();
+        Session session = LoginUI.getCurrentSession();
+        if(session.getTransaction() == null){
+            session.beginTransaction();
+        }
+        else
+            session.getTransaction().begin();
+
 		 Position user = new Position();
 		 List<Position> list =  session.createCriteria(Position.class).list();
 		 for (Position student : list) {
@@ -37,8 +48,13 @@ public class Positions {
 	}
 	
 	public static ArrayList<String> getTitles(){
-		 Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-		 session.beginTransaction();
+        Session session = LoginUI.getCurrentSession();
+        if(session.getTransaction() == null){
+            session.beginTransaction();
+        }
+        else
+            session.getTransaction().begin();
+
 		 List<Position> list =  session.createCriteria(Position.class).list();
 		 ArrayList<String> titles = new ArrayList<String>();
 		 for (Position student : list) {
@@ -49,8 +65,13 @@ public class Positions {
 	 }
 	
 	public static void addPosition(Position student){
-		 Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-		 session.beginTransaction();		 
+        Session session = LoginUI.getCurrentSession();
+        if(session.getTransaction() == null){
+            session.beginTransaction();
+        }
+        else
+            session.getTransaction().begin();
+
 		 session.save(student);		 
 		 session.getTransaction().commit();	 
 	 }

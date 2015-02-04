@@ -100,15 +100,19 @@ public class Add_Product extends Window{
 												// TODO Auto-generated method stub
 												if(projects.getValue()!=null){
 													if(!name.getValue().isEmpty()){
-														Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-														session.beginTransaction();
-															Product product = new Product();
-															product.setName(name.getValue());
-															product.setProject((Project)projects.getValue());
-															session.save(product);
-															
-															product_list.add(product);
-															update();
+                                                        Session session = LoginUI.getCurrentSession();
+                                                        if(session.getTransaction() == null){
+                                                            session.beginTransaction();
+                                                        }
+                                                        else
+                                                            session.getTransaction().begin();
+                                                        Product product = new Product();
+                                                        product.setName(name.getValue());
+                                                        product.setProject((Project)projects.getValue());
+                                                        session.save(product);
+
+                                                        product_list.add(product);
+                                                        update();
 														session.getTransaction().commit();
 													}
 													else	sub_text.setValue("product name is empty");

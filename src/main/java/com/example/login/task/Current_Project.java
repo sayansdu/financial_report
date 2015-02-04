@@ -57,7 +57,7 @@ public class Current_Project extends Window{
 			
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				// TODO Auto-generated method stub
+
 				current_project = (Project) projects.getValue();
 				update();
 			}
@@ -101,7 +101,6 @@ public class Current_Project extends Window{
 					
 					@Override
 					public void buttonClick(ClickEvent event) {
-						// TODO Auto-generated method stub
 						close();
 					}
 				});

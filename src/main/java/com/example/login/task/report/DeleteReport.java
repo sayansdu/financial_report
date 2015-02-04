@@ -183,8 +183,13 @@ public class DeleteReport extends Window{
                                 @Override
                                 public void buttonClick(ClickEvent event) {
 
-                                Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-                                session.beginTransaction();
+                                Session session = LoginUI.getCurrentSession();
+                                if(session.getTransaction() == null){
+                                    session.beginTransaction();
+                                }
+                                else
+                                    session.getTransaction().begin();
+
                                 session.delete(report);
                                 session.getTransaction().commit();
                                 reportList.remove(report);

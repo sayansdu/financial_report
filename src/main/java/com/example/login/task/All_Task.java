@@ -111,7 +111,7 @@ public class All_Task extends Window{
 					
 					@Override
 					public void buttonClick(ClickEvent event) {
-						// TODO Auto-generated method stub
+
 						close();
 					}
 				});

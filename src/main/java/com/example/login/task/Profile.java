@@ -2,6 +2,7 @@ package com.example.login.task;
 
 import java.io.*;
 
+import com.example.login.LoginUI;
 import org.hibernate.Session;
 
 import com.example.login.entity.Student;
@@ -96,8 +97,13 @@ public class Profile extends Window {
 											
 											@Override
 											public void buttonClick(ClickEvent event) {
-												Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-									   		 	session.beginTransaction();
+                                                Session session = LoginUI.getCurrentSession();
+                                                if(session.getTransaction() == null){
+                                                    session.beginTransaction();
+                                                }
+                                                else
+                                                    session.getTransaction().begin();
+
 									   		 	current_user2.setLogo(null);
 									   		 	session.update(current_user2);
 									   		 	session.getTransaction().commit();	
@@ -147,8 +153,13 @@ public class Profile extends Window {
                     @Override
                     public void buttonClick(ClickEvent event) {
                     	if(tf3.getValue().equals(current_user2.getPassword())){
-	                    	Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-	    		   		 	session.beginTransaction();
+                            Session session = LoginUI.getCurrentSession();
+                            if(session.getTransaction() == null){
+                                session.beginTransaction();
+                            }
+                            else
+                                session.getTransaction().begin();
+
 	    		   		 	current_user2.setName(tf.getValue());
 	    		   		 	current_user2.setEmail(tf2.getValue());
 	    		   		 	session.update(current_user2);
@@ -198,8 +209,12 @@ public class Profile extends Window {
                         file.createNewFile();
                     }
 		            fos = new FileOutputStream(file);
-		            Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-		   		 	session.beginTransaction();
+                     Session session = LoginUI.getCurrentSession();
+                     if(session.getTransaction() == null){
+                         session.beginTransaction();
+                     }
+                     else
+                         session.getTransaction().begin();
 		   		 	current_user2.setLogo(file_name);
 		   		 	session.update(current_user2);
 		   		 	session.getTransaction().commit();	

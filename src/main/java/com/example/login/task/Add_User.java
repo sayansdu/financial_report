@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.example.login.LoginUI;
 import org.hibernate.Session;
 
 import com.example.login.controller.Positions;
@@ -209,10 +210,15 @@ public class Add_User extends Window {
                     public void buttonClick(ClickEvent event) {
                     	if( !(tf.getValue().isEmpty()) && validate(tf2.getValue())){
                     		if(pas1.getValue().equals(pas2.getValue())){
-                    			  if(positions.getValue()!=null) {                 			
-		                    			
-		                    			Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-		    	    		   		 	session.beginTransaction();
+                    			  if(positions.getValue()!=null) {
+
+                                      Session session = LoginUI.getCurrentSession();
+                                      if(session.getTransaction() == null){
+                                          session.beginTransaction();
+                                      }
+                                      else
+                                          session.getTransaction().begin();
+
 		    	    		   		 	Student newstudent = new Student();
 		                    			newstudent.setName(tf.getValue());
 		                    			newstudent.setEmail(tf2.getValue());

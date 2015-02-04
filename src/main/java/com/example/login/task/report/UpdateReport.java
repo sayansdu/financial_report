@@ -166,8 +166,12 @@ public class UpdateReport extends Window{
 
                                                 if(projects.getValue()!=null){
                                                     if(products.getValue()!=null){
-                                                        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-                                                        session.beginTransaction();
+                                                        Session session = LoginUI.getCurrentSession();
+                                                        if(session.getTransaction() == null){
+                                                            session.beginTransaction();
+                                                        }
+                                                        else
+                                                            session.getTransaction().begin();
 
                                                         currentReport.setProduct((Product) products.getValue());
                                                         currentReport.setAmount(Integer.parseInt(amount.getValue()));

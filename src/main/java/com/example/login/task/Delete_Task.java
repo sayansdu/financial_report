@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.example.login.LoginUI;
 import org.hibernate.Session;
 
 import com.example.login.controller.Tasks;
@@ -143,9 +144,13 @@ public class Delete_Task extends Window{
 								
 								@Override
 								public void buttonClick(ClickEvent event) {
-									// TODO Auto-generated method stub
-									Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-									session.beginTransaction();
+                                    Session session = LoginUI.getCurrentSession();
+                                    if(session.getTransaction() == null){
+                                        session.beginTransaction();
+                                    }
+                                    else
+                                        session.getTransaction().begin();
+
 									session.delete(task);
 									session.getTransaction().commit();
 									task_list.clear();

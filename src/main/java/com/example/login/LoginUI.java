@@ -105,7 +105,7 @@ public class LoginUI extends UI {
             put("/transactions", TransactionsView.class);
         }
     };
-    Session session;
+    static Session session;
     
 	@Override
 	protected void init(VaadinRequest request) {
@@ -675,5 +675,9 @@ public class LoginUI extends UI {
 
     public static Student getCurrentUser(){
         return current_user;
+    }
+
+    public static Session getCurrentSession(){
+        return session;
     }
 }
