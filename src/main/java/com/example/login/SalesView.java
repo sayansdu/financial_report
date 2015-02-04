@@ -47,7 +47,7 @@ public class SalesView extends VerticalLayout implements View{
         addStyleName("timeline");
         setMargin(false);
         setSpacing(false);
-        Label header = new Label("Revenue by Movie Title");
+        Label header = new Label("Revenue by Product");
         header.addStyleName("h1");
         addComponent(header);
         

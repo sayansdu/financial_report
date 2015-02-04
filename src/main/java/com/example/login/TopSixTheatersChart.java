@@ -14,7 +14,7 @@ import com.vaadin.addon.charts.model.DataSeriesItem;
 public class TopSixTheatersChart extends Chart {
 
 	public TopSixTheatersChart(){
-		setCaption("Top 10 movie");
+		setCaption("Top 6 products");
 		getConfiguration().setTitle("");
 		getConfiguration().getChart().setType(ChartType.PIE);
 		getConfiguration().getxAxis().getLabels().setEnabled(false);
