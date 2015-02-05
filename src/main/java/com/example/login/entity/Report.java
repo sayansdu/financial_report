@@ -1,6 +1,13 @@
 package com.example.login.entity;
 
+import org.hibernate.annotations.*;
+
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Entity
 @Table(name="report")
@@ -15,6 +22,7 @@ public class Report {
 	private int sold_amount;
 	private int price;
 	private int cost_price;
+    private Date createDate;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -83,11 +91,22 @@ public class Report {
 	public void setCost_price(int cost_price) {
 		this.cost_price = cost_price;
 	}
-	
-	@Override
+
+    @Column(name="create_date")
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    @Override
 	public String toString() {
-		return "Report [year=" + year + ", month=" + month + ", amount="
-				+ amount + ", sold_amount=" + sold_amount  + ", cost_price=" + cost_price
+        SimpleDateFormat format = new SimpleDateFormat("MM/yyyy");
+        String tempDate = format.format(createDate == null ? new Date() : createDate);
+		return "Report [Create date=" + tempDate + ", amount="
+				+ amount + ", Sold amount=" + sold_amount  + ", Cost price=" + cost_price
                 + ", price=" + price + "]";
 	}
 }
