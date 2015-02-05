@@ -14,17 +14,14 @@ import java.util.Date;
 public class Report {
 	
 	private long id;
-	private Product product;
-	private int year;
-	private Month month;
-	
 	private int amount;
 	private int sold_amount;
 	private int price;
 	private int cost_price;
     private Date createDate;
-	
-	@Id
+    private Product product;
+
+    @Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	public long getId() {
 		return id;
@@ -41,25 +38,7 @@ public class Report {
 	public void setProduct(Product product) {
 		this.product = product;
 	}
-	
-	@Column(name="year")
-	public int getYear() {
-		return year;
-	}
-	public void setYear(int year) {
-		this.year = year;
-	}
-	
-	
-	@ManyToOne
-	@JoinColumn(name="month", nullable=false)
-	public Month getMonth() {
-		return month;
-	}
-	public void setMonth(Month month) {
-		this.month = month;
-	}
-	
+
 	@Column(name="amount")
 	public int getAmount() {
 		return amount;

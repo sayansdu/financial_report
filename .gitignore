@@ -1,11 +1,9 @@
 *.iml
 *.ldb
-.idea/
 .idea/*
 target/
 .settings/
 src/main/webapp/VAADIN/widgetsets/*
-src/main/webapp/VAADIN/widgetsets
-.project
-.classpath
+src/main/webapp/VAADIN/widgetsets/
+src/main/webapp/VAADIN/gwt-unitCache/*
 out/

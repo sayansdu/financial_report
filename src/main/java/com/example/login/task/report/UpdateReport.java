@@ -1,17 +1,13 @@
 package com.example.login.task.report;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import com.example.login.LoginUI;
-import com.example.login.controller.Months;
 import com.example.login.controller.Projects;
-import com.example.login.entity.Month;
 import com.example.login.entity.Product;
 import com.example.login.entity.Project;
 import com.example.login.entity.Report;
 import com.example.login.entity.Student;
-import com.example.login.util.HibernateUtil;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.LayoutEvents;
@@ -50,7 +46,7 @@ public class UpdateReport extends Window{
     private Student currentUser;
     private Report currentReport;
     private Set<Product> productList = new HashSet<Product>();
-    private Set<Report> reportList = new HashSet<Report>();
+    private List<Report> reportList = new ArrayList<Report>();
     private ComboBox products;
 
     public UpdateReport(){
@@ -93,7 +89,13 @@ public class UpdateReport extends Window{
             @Override
             public void valueChange(ValueChangeEvent event) {
 
-                reportList = ( (Product) products.getValue()).getReport();
+                reportList = new ArrayList<>(((Product) products.getValue()).getReport());
+                Collections.sort(reportList, new Comparator<Report>() {
+                    @Override
+                    public int compare(Report o1, Report o2) {
+                        return o1.getCreateDate().compareTo(o2.getCreateDate());
+                    }
+                });
                 update();
             }
         });
@@ -161,7 +163,14 @@ public class UpdateReport extends Window{
                                                         session.update(currentReport);
                                                         session.getTransaction().commit();
 
-                                                        reportList = ( (Product) products.getValue()).getReport();
+                                                        reportList.clear();
+                                                        reportList = new ArrayList<>(((Product) products.getValue()).getReport());
+                                                        Collections.sort(reportList, new Comparator<Report>() {
+                                                            @Override
+                                                            public int compare(Report o1, Report o2) {
+                                                                return o1.getCreateDate().compareTo(o2.getCreateDate());
+                                                            }
+                                                        });
                                                         update();
                                                     }
                                                     else sub_text.setValue("please, select the product");

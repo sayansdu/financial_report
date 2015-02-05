@@ -2,7 +2,6 @@ package com.example.login.test;
 
 import org.hibernate.Session;
 
-import com.example.login.controller.Months;
 import com.example.login.controller.Products;
 import com.example.login.entity.Report;
 import com.example.login.util.HibernateUtil;
@@ -22,9 +21,7 @@ public class TestReport {
 		session.beginTransaction();
 			Report rep = new Report();
 			rep.setProduct(Products.getProducts().get(1));
-			rep.setYear(2012);
-			rep.setMonth(Months.getMonths().get(0));
-			
+
 			rep.setAmount(93);
 			rep.setSold_amount(80);
 			rep.setCost_price(110);

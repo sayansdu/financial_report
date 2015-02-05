@@ -96,8 +96,8 @@ public class TransactionsView extends VerticalLayout implements View {
 //        filterTable.setVisibleColumns(new String[] { "name", "id", "state",
 //                "date", "validated", "checked" });
 
-        filterTable.setColumnHeaders(new String[] { "Product", "Year", "Month", "Amount","Sold amount","Cost price", "Price" });
-        filterTable.setVisibleColumns(new String[] { "product", "year", "month","amount", "soldAmount", "costPrice", "price"});
+        filterTable.setColumnHeaders(new String[] { "Product", "Create date", "Amount","Sold amount","Cost price", "Price" });
+        filterTable.setVisibleColumns(new String[] { "product", "createDate","amount", "soldAmount", "costPrice", "price"});
 		
 		return filterTable;
 	}
@@ -108,8 +108,7 @@ public class TransactionsView extends VerticalLayout implements View {
         List<Report> reports = Reports.getReports();
 
         cont.addContainerProperty("product", String.class, null);
-        cont.addContainerProperty("year", Integer.class, null);
-        cont.addContainerProperty("month", String.class, null);
+        cont.addContainerProperty("createDate", Timestamp.class, null);
         cont.addContainerProperty("amount", Integer.class, null);
         cont.addContainerProperty("soldAmount", Integer.class, null);
         cont.addContainerProperty("costPrice", Integer.class, null);
@@ -119,8 +118,7 @@ public class TransactionsView extends VerticalLayout implements View {
             cont.addItem(i);
             /* Set name and id properties */
             cont.getContainerProperty(i, "product").setValue(reports.get(i).getProduct().getName());
-            cont.getContainerProperty(i, "year").setValue(reports.get(i).getYear());
-            cont.getContainerProperty(i, "month").setValue(reports.get(i).getMonth().getName());
+            cont.getContainerProperty(i, "createDate").setValue(new Timestamp(reports.get(i).getCreateDate().getTime()));
             cont.getContainerProperty(i, "amount").setValue(reports.get(i).getAmount());
             cont.getContainerProperty(i, "soldAmount").setValue(reports.get(i).getSold_amount());
             cont.getContainerProperty(i, "costPrice").setValue(reports.get(i).getCost_price());

@@ -16,6 +16,7 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -96,6 +97,7 @@ public class SalesView extends VerticalLayout implements View{
         csslay.setSpacing(true);
         date = new DateField("start:");
         date.setValue(cal.getTime());
+        date.setImmediate(true);
         csslay.addComponent(date);
 
         date2 = new PopupDateField("end:");

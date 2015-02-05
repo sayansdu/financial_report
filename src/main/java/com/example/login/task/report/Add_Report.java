@@ -3,14 +3,11 @@ package com.example.login.task.report;
 import java.util.*;
 
 import com.example.login.LoginUI;
-import com.example.login.controller.Months;
 import com.example.login.controller.Projects;
-import com.example.login.entity.Month;
 import com.example.login.entity.Product;
 import com.example.login.entity.Project;
 import com.example.login.entity.Report;
 import com.example.login.entity.Student;
-import com.example.login.util.HibernateUtil;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
@@ -38,10 +35,8 @@ public class Add_Report extends Window{
 	private ComboBox projects;
 	private Student currentUser;
 	private Set<Product> productList = new HashSet<Product>();
-	private Set<Report> reportList = new HashSet<Report>();
+	private List<Report> reportList = new ArrayList<Report>();
 	private ComboBox products;
-//	private ComboBox years;
-//	private ComboBox months;
     private DateField createDate;
 	
 	public Add_Report(){
@@ -82,7 +77,15 @@ public class Add_Report extends Window{
 			
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				reportList = ( (Product) products.getValue()).getReport();
+                reportList.clear();
+				reportList = new ArrayList<>(((Product) products.getValue()).getReport());
+                Collections.sort(reportList, new Comparator<Report>() {
+                    @Override
+                    public int compare(Report o1, Report o2) {
+                        return o1.getCreateDate().compareTo(o2.getCreateDate());
+                    }
+                });
+
                 if(reportList.size() == 0){
                     if(new_report.getComponent(0) != createDate)
                         new_report.addComponent(createDate, 0);
@@ -94,23 +97,6 @@ public class Add_Report extends Window{
 				update();
 			}
 		});
-		
-		
-//		years = new ComboBox("Year:");
-//		years.setImmediate(true);
-//		years.setNullSelectionAllowed(false);
-//		years.setWidth("60px");
-//		for(int i=0; i<10; i++){
-//			years.addItem("201"+i);
-//		}
-//
-//		months = new ComboBox("Month:");
-//		months.setImmediate(true);
-//		months.setNullSelectionAllowed(false);
-//		months.setWidth("100px");
-//		for (Month month : Months.getMonths()) {
-//			months.addItem(month);
-//		}
 		
 		main.addComponent(top = new HorizontalLayout(){
         	{
@@ -132,15 +118,12 @@ public class Add_Report extends Window{
         						setCaption("New Report");
         						setSpacing(true);
         						setMargin(true);
-//        						addComponent(years);
-//        						addComponent(months);
 
                                 if(reportList.size() == 0){
                                     createDate = new InlineDateField();
                                     createDate.setCaption("Select date:");
                                     createDate.setResolution(DateField.RESOLUTION_MONTH);
                                     addComponent(createDate);
-                                    System.out.println("index: "+getComponentIndex(createDate));
                                 }
 
         						amount = new TextField("Amount:");
@@ -180,16 +163,13 @@ public class Add_Report extends Window{
                                                         report.setProduct((Product) products.getValue());
                                                         report.setAmount(Integer.parseInt(amount.getValue()));
                                                         report.setSold_amount(Integer.parseInt(sold_amount.getValue()));
-//                                                        report.setYear(Integer.parseInt((String) years.getValue()));
-//                                                        report.setMonth((Month) months.getValue());
                                                         report.setCost_price(Integer.parseInt(cost_price.getValue()));
                                                         report.setPrice(Integer.parseInt(price.getValue()));
 
                                                         if(reportList.size() == 0)
                                                             report.setCreateDate(createDate.getValue());
                                                         else{
-                                                            List<Report> list = new ArrayList<Report>(reportList);
-                                                            Date temp = list.get(list.size()-1).getCreateDate();
+                                                            Date temp = reportList.get(reportList.size()-1).getCreateDate();
                                                             Calendar cal = Calendar.getInstance();
                                                             cal.setTime(temp);
                                                             cal.add(Calendar.MONTH, 1);
