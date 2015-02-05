@@ -1,19 +1,13 @@
 package com.example.login;
 
 import java.text.DecimalFormat;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
+import com.example.login.entity.*;
 import com.example.login.task.Add_Task;
 import org.hibernate.Session;
 
-import com.example.login.TopSixTheatersChart;
-import com.example.login.TopGrossingMoviesChart;
 import com.example.login.data.DataProvider;
-import com.example.login.entity.Project;
-import com.example.login.entity.Student;
-import com.example.login.entity.Task;
-import com.example.login.util.HibernateUtil;
 import com.vaadin.data.Property;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
@@ -218,31 +212,7 @@ public class DashboardView extends VerticalLayout implements View{
         addComponent(row);
         setExpandRatio(row, 2);
         
-        t = new Table() {
-            @Override
-            protected String formatPropertyValue(Object rowId, Object colId,
-                    Property<?> property) {
-                if (colId.equals("Revenue")) {
-                    if (property != null && property.getValue() != null) {
-                        Double r = (Double) property.getValue();
-                        String ret = new DecimalFormat("#.##").format(r);
-                        return "$" + ret;
-                    } else {
-                        return "";
-                    }
-                }
-                return super.formatPropertyValue(rowId, colId, property);
-            }
-        };
-        t.setCaption("Top 10 sales of month");
-
-        t.setWidth("100%");
-        t.setPageLength(0);
-        t.addStyleName("plain");
-        t.addStyleName("borderless");
-        t.setSortEnabled(false);
-        t.setColumnAlignment("Revenue", Align.RIGHT);
-        t.setRowHeaderMode(RowHeaderMode.INDEX);
+        t = getPreparedTable();
         
         row.addComponent(createPanel(t));
         row.addComponent(createPanel(new TopSixTheatersChart()));
@@ -251,7 +221,6 @@ public class DashboardView extends VerticalLayout implements View{
 	
 	@Override
 	public void enter(ViewChangeEvent event) {
-		// TODO Auto-generated method stubs
 		
 	}
 
@@ -305,7 +274,7 @@ public class DashboardView extends VerticalLayout implements View{
         configure.addClickListener(new ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
-                Notification.show("Not implemented in this demo");
+                Notification.show("Not implemented in this project");
             }
         });
         panel.addComponent(configure);
@@ -313,5 +282,56 @@ public class DashboardView extends VerticalLayout implements View{
         panel.addComponent(content);
         return panel;
 	}
-	
+
+    private Table getPreparedTable(){
+        Table temp = new Table() {
+            @Override
+            protected String formatPropertyValue(Object rowId, Object colId,
+                                                 Property<?> property) {
+                if (colId.equals("Revenue")) {
+                    if (property != null && property.getValue() != null) {
+                        Double r = (Double) property.getValue();
+                        String ret = new DecimalFormat("#.##").format(r);
+                        return "$" + ret;
+                    } else {
+                        return "";
+                    }
+                }
+                return super.formatPropertyValue(rowId, colId, property);
+            }
+        };
+        temp.setCaption("Top products by average revenue");
+
+        temp.setWidth("100%");
+        temp.setPageLength(0);
+        temp.addStyleName("plain");
+        temp.addStyleName("borderless");
+        temp.setSortEnabled(false);
+        temp.setColumnAlignment("Revenue", Align.RIGHT);
+        temp.setRowHeaderMode(RowHeaderMode.INDEX);
+
+        Project currentProject = LoginUI.getCurrentProject();
+        Set<Product> products = currentProject.getProducts();
+
+        if(currentProject != null && (products!=null && products.size()>0)){
+            temp.addContainerProperty("Product", String.class, null);
+            temp.addContainerProperty("Average Revenue (tg)",  Integer.class, null);
+            List<Product> productList = new ArrayList<Product>(products);
+            int length = (productList.size()>8 ? 8: productList.size());
+
+            for (int i=0; i<length; i++) {
+                Set<Report> reports = productList.get(i).getReport();
+                int score = 0;
+                for (Report report : reports) {
+                    score += report.getSold_amount() * (report.getPrice()-report.getCost_price());
+                }
+
+                temp.addItem(new Object[]{productList.get(i).getName(), score/reports.size()}, i+1);
+            }
+
+
+        }
+
+        return temp;
+    }
 }
