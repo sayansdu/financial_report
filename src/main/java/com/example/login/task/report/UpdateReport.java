@@ -52,8 +52,6 @@ public class UpdateReport extends Window{
     private Set<Product> productList = new HashSet<Product>();
     private Set<Report> reportList = new HashSet<Report>();
     private ComboBox products;
-    private ComboBox years;
-    private ComboBox months;
 
     public UpdateReport(){
         setCaption("Update Reports");
@@ -100,23 +98,6 @@ public class UpdateReport extends Window{
             }
         });
 
-
-        years = new ComboBox("Year:");
-        years.setImmediate(true);
-        years.setNullSelectionAllowed(false);
-        years.setWidth("60px");
-        for(int i=0; i<10; i++){
-            years.addItem("201"+i);
-        }
-
-        months = new ComboBox("Month:");
-        months.setImmediate(true);
-        months.setNullSelectionAllowed(false);
-        months.setWidth("100px");
-        for (Month month : Months.getMonths()) {
-            months.addItem(month);
-        }
-
         main.addComponent(top = new HorizontalLayout(){
             {
                 setMargin(true);
@@ -134,11 +115,9 @@ public class UpdateReport extends Window{
 
                         addComponent(new_report = new HorizontalLayout(){
                             {
-                                setCaption("New Report");
+                                setCaption("Current report");
                                 setSpacing(true);
                                 setMargin(true);
-                                addComponent(years);
-                                addComponent(months);
 
                                 amount = new TextField("Amount:");
                                 amount.setColumns(5);
@@ -176,8 +155,6 @@ public class UpdateReport extends Window{
                                                         currentReport.setProduct((Product) products.getValue());
                                                         currentReport.setAmount(Integer.parseInt(amount.getValue()));
                                                         currentReport.setSold_amount(Integer.parseInt(sold_amount.getValue()));
-                                                        currentReport.setYear(Integer.parseInt((String) years.getValue()));
-                                                        currentReport.setMonth((Month) months.getValue());
                                                         currentReport.setCost_price(Integer.parseInt(cost_price.getValue()));
                                                         currentReport.setPrice(Integer.parseInt(price.getValue()));
 
@@ -246,8 +223,6 @@ public class UpdateReport extends Window{
                         public void layoutClick(LayoutEvents.LayoutClickEvent event) {
 
                             currentReport = report;
-                            years.select(report);
-                            months.select(report.getMonth());
                             amount.setValue(String.valueOf(report.getAmount()));
                             sold_amount.setValue(String.valueOf(report.getSold_amount()));
                             cost_price.setValue(String.valueOf(report.getCost_price()));

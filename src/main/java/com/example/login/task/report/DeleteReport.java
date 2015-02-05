@@ -37,25 +37,16 @@ public class DeleteReport extends Window{
     VerticalLayout productLayout;
     HorizontalLayout top;
     HorizontalLayout bottom;
-    HorizontalLayout new_report;
     FormLayout form;
-
-    Label sub_text;
-    TextField amount;
-    TextField sold_amount;
-    TextField price;
-    TextField cost_price;
-    Button add;
 
     private ComboBox projects;
     private Student currentUser;
     private Set<Product> productList = new HashSet<Product>();
     private Set<Report> reportList = new HashSet<Report>();
     private ComboBox products;
-    private ComboBox years;
-    private ComboBox months;
 
     public DeleteReport(){
+
         setCaption("Delete Reports");
         setModal(true);
         setResizable(false);
@@ -100,23 +91,6 @@ public class DeleteReport extends Window{
             }
         });
 
-
-        years = new ComboBox("Year:");
-        years.setImmediate(true);
-        years.setNullSelectionAllowed(false);
-        years.setWidth("60px");
-        for(int i=0; i<10; i++){
-            years.addItem("201"+i);
-        }
-
-        months = new ComboBox("Month:");
-        months.setImmediate(true);
-        months.setNullSelectionAllowed(false);
-        months.setWidth("100px");
-        for (Month month : Months.getMonths()) {
-            months.addItem(month);
-        }
-
         main.addComponent(top = new HorizontalLayout(){
             {
                 setMargin(true);
@@ -131,10 +105,6 @@ public class DeleteReport extends Window{
                         productLayout.setCaption("Report List");
                         productLayout.setSpacing(false);
                         addComponent(productLayout);
-
-                        sub_text = new Label();
-                        sub_text.setStyleName("position_error");
-                        addComponent(sub_text);
                     }
                 });
             }
@@ -190,9 +160,10 @@ public class DeleteReport extends Window{
                                 else
                                     session.getTransaction().begin();
 
+                                reportList.remove(report);
                                 session.delete(report);
                                 session.getTransaction().commit();
-                                reportList.remove(report);
+
                                 update();
                                 }
                             });
