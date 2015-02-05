@@ -644,7 +644,7 @@ public class LoginUI extends UI {
 	            if (next instanceof NativeButton) {
 	                next.removeStyleName("selected");
 	            } else if (next instanceof DragAndDropWrapper) {
-	                // Wow, this is ugly (even uglier than the rest of the code)
+
 	                ((DragAndDropWrapper) next).iterator().next()
 	                        .removeStyleName("selected");
 	            }
@@ -660,7 +660,7 @@ public class LoginUI extends UI {
 			
 			@Override
 			public void windowClose(CloseEvent e) {
-				// TODO Auto-generated method stub
+
 				session.refresh(current_project);
 			}
 		});
@@ -671,7 +671,7 @@ public class LoginUI extends UI {
 			
 			@Override
 			public void windowClose(CloseEvent e) {
-				// TODO Auto-generated method stub
+
                session.refresh(current_user);
 			}
 		});

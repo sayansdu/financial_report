@@ -10,6 +10,7 @@ import com.example.login.data.DataProvider.Movie;
 import com.example.login.entity.Product;
 import com.example.login.entity.Project;
 
+import com.example.login.entity.Report;
 import com.vaadin.addon.timeline.Timeline;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
@@ -25,8 +26,8 @@ public class SalesView extends VerticalLayout implements View{
 
     private Project currentProject;
     private Timeline timeline = new Timeline();
-    int colorIndex = -1;
-    final Container.Indexed AAPL = buildContainer();
+    private int colorIndex = -1;
+    private boolean valid = true;
     final ComboBox movieSelect = new ComboBox();
 
     DateField date;
@@ -69,8 +70,12 @@ public class SalesView extends VerticalLayout implements View{
         add.addClickListener(new ClickListener() {
             @Override
             public void buttonClick(ClickEvent clickEvent) {
-                if(movieSelect.getValue() != null){
-                    addGraph(((Product) movieSelect.getValue()).getName());
+                if(movieSelect.getValue() != null && (movieSelect.getValue() instanceof Product)){
+                    addGraph(((Product) movieSelect.getValue()));
+                    movieSelect.removeItem(movieSelect.getValue());
+                }
+                else if(movieSelect.getValue() != null){
+                    addDefaultGraph((String) movieSelect.getValue());
                     movieSelect.removeItem(movieSelect.getValue());
                 }
             }
@@ -116,7 +121,7 @@ public class SalesView extends VerticalLayout implements View{
         });
 
         csslay.setComponentAlignment(set, Alignment.BOTTOM_RIGHT);
-        addComponent(csslay);
+//        addComponent(csslay);
 
         getGraph();
     }
@@ -144,26 +149,69 @@ public class SalesView extends VerticalLayout implements View{
         addComponent(timeline);
         setExpandRatio(timeline, 2);
 
-        timeline.addGraphDataSource(AAPL, Timeline.PropertyId.TIMESTAMP, Timeline.PropertyId.VALUE);
-        timeline.setGraphLegend(AAPL, "Apple");
-        timeline.setVerticalAxisLegendUnit(AAPL, "meter");
-        timeline.setGraphOutlineColor(AAPL, colors[1]);
-
-        if(date2.getValue().after(date.getValue()) ) {
-            timeline.setVisibleDateRange(date.getValue(), date2.getValue());
+        Object firstValue = movieSelect.getItemIds().toArray()[0];
+        if(valid){
+            if(firstValue instanceof Product){
+                addGraph((Product) firstValue);
+                movieSelect.removeItem(firstValue);
+            }
         }
-        else
-            timeline.setVisibleDateRange(cal.getTime(), cal2.getTime());
+        else{
+            if(firstValue instanceof String){
+                addDefaultGraph(String.valueOf(firstValue));
+                movieSelect.removeItem(firstValue);
+            }
+        }
+//        if(date2.getValue().after(date.getValue()) ) {
+//            timeline.setVisibleDateRange(date.getValue(), date2.getValue());
+//        }
+//        else
+//            timeline.setVisibleDateRange(cal.getTime(), cal2.getTime());
 
     }
 
-    private void addGraph(String productName){
-        final Container.Indexed tempContainer = buildContainer();
+    private void addGraph(Product product){
+        final Container.Indexed tempContainer = buildContainer(product.getReport());
         timeline.addGraphDataSource(tempContainer, Timeline.PropertyId.TIMESTAMP, Timeline.PropertyId.VALUE);
-        timeline.setGraphLegend(tempContainer, productName);
+        timeline.setGraphLegend(tempContainer, product.getName());
         timeline.setVerticalAxisLegendUnit(tempContainer, "T");
         timeline.setGraphOutlineColor(tempContainer, colors[randInt(0, 3)]);
 
+    }
+
+    private void addDefaultGraph(String name){
+        final Container.Indexed tempContainer = buildContainer();
+        timeline.addGraphDataSource(tempContainer, Timeline.PropertyId.TIMESTAMP, Timeline.PropertyId.VALUE);
+        timeline.setGraphLegend(tempContainer, name);
+        timeline.setVerticalAxisLegendUnit(tempContainer, "$");
+        timeline.setGraphOutlineColor(tempContainer, colors[randInt(0, 3)]);
+
+    }
+
+    private IndexedContainer buildContainer(Set<Report> reports){
+        // Create the container
+        List<Report> reportList = new ArrayList<Report>(reports);
+        Collections.sort(reportList, new Comparator<Report>() {
+            @Override
+            public int compare(Report o1, Report o2) {
+                return o1.getCreateDate().compareTo(o2.getCreateDate());
+            }
+        });
+
+        IndexedContainer container = new IndexedContainer();
+        container.addContainerProperty(Timeline.PropertyId.TIMESTAMP, Date.class, null);
+        container.addContainerProperty(Timeline.PropertyId.VALUE, Integer.class, 0);
+
+        for (Report report : reportList) {
+            Item item = container.addItem(report.getCreateDate().getTime());
+            item.getItemProperty(Timeline.PropertyId.TIMESTAMP).setValue(
+                    report.getCreateDate());
+
+            int score = report.getSold_amount() * (report.getPrice() - report.getCost_price());
+            item.getItemProperty(Timeline.PropertyId.VALUE).setValue(score);
+
+        }
+        return container;
     }
 
     private IndexedContainer buildContainer(){
@@ -211,14 +259,16 @@ public class SalesView extends VerticalLayout implements View{
         {
             Set<Product> dataList = currentProject.getProducts();
             for (Product product : dataList) {
-                movieSelect.addItem(product);
+                if(product.getReport() != null && product.getReport().size()>0)
+                    movieSelect.addItem(product);
             }
         }
         else
         {
+            valid = false;
             ArrayList<Movie> movies = DataProvider.getMovies();
-            for (Movie movy : movies) {
-                movieSelect.addItem(movy);
+            for (Movie movie : movies) {
+                movieSelect.addItem(movie.title);
             }
         }
     }
