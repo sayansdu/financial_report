@@ -684,4 +684,8 @@ public class LoginUI extends UI {
     public static Session getCurrentSession(){
         return session;
     }
+
+    public static Project getCurrentProject(){
+        return current_project;
+    }
 }

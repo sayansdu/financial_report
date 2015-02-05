@@ -1,22 +1,17 @@
 package com.example.login;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-import com.example.login.controller.Reports;
 import com.example.login.data.DataProvider;
 import com.example.login.data.DataProvider.Movie;
 
+import com.example.login.entity.Product;
 import com.example.login.entity.Project;
 import com.example.login.entity.Report;
 import com.vaadin.addon.charts.Chart;
 import com.vaadin.addon.charts.model.ChartType;
-import com.vaadin.addon.charts.model.Configuration;
-import com.vaadin.addon.charts.model.DataSeriesItem;
 import com.vaadin.addon.charts.model.ListSeries;
 import com.vaadin.addon.charts.model.Series;
-import com.vaadin.addon.charts.model.XAxis;
-import com.vaadin.addon.charts.model.YAxis;
 
 
 
@@ -24,7 +19,7 @@ public class TopGrossingMoviesChart extends Chart {
 
     private Project currentProject;
 
-public TopGrossingMoviesChart() {
+    public TopGrossingMoviesChart() {
 		
 		setCaption("Top Grossing Products");
         getConfiguration().setTitle("");
@@ -35,23 +30,23 @@ public TopGrossingMoviesChart() {
         setWidth("100%");
         setHeight("90%");
 
-        currentProject = LoginUI.current_project;
-        if(currentProject != null)
+        currentProject = LoginUI.getCurrentProject();
+        if(currentProject != null && currentProject.getProducts()!= null)
         {
-            List<Report> reports = Reports.getReports();
+            List<Product> products = new ArrayList<Product>(currentProject.getProducts());
 
-            if(reports!=null && reports.size()>6){
+            if(products.size()>6){
                 List<Series> series = new ArrayList<Series>();
 
-                int length = reports.size();
-                if(length > 6)
-                    length = 6;
+                for (int i = 0; i < 7; i++) {
+                    Product product = products.get(i);
+                    Set<Report> reports = product.getReport();
+                    int score = 0;
+                    for (Report report : reports) {
+                        score += report.getSold_amount() * (report.getPrice()-report.getCost_price());
+                    }
 
-                for (int i = 0; i < length; i++) {
-                    Report report = reports.get(i);
-                    int score = report.getSold_amount() * (report.getPrice()-report.getCost_price());
-                    series.add(new ListSeries(report.getProduct().getName(), score));
-
+                    series.add(new ListSeries(product.getName(), score));
                 }
                 getConfiguration().setSeries(series);
             }

@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.example.login.task.Add_Task;
 import org.hibernate.Session;
 
 import com.example.login.TopSixTheatersChart;
@@ -50,8 +51,8 @@ public class DashboardView extends VerticalLayout implements View{
 	Set<Task> tasks = new HashSet<Task>();
 	
 	public DashboardView() {
-		current_user = LoginUI.current_user;
-		current_project = LoginUI.current_project;
+		current_user = LoginUI.getCurrentUser();
+		current_project = LoginUI.getCurrentProject();
 		for (Task task : current_user.getReceived()) {			
 				if(task.isReaded()==false)
 					tasks.add(task);			
@@ -68,7 +69,7 @@ public class DashboardView extends VerticalLayout implements View{
         top.setSpacing(true);
         top.addStyleName("toolbar");
         addComponent(top);
-        final Label title = new Label("Analytics");
+        final Label title = new Label("Data");
         title.setSizeUndefined();
         title.addStyleName("h1");
         top.addComponent(title);
@@ -117,12 +118,19 @@ public class DashboardView extends VerticalLayout implements View{
         edit.addStyleName("icon-edit");
         edit.addStyleName("icon-only");
         top.addComponent(edit);
-        edit.setDescription("Edit Dashboard");
+        edit.setDescription("Add Task");
         edit.addClickListener(new ClickListener() {
 			
 			@Override
 			public void buttonClick(ClickEvent event) {
-				final Window w = new Window("Edit Dashboard");
+
+
+                if(current_project!=null){
+                    Window add_task_window = new Add_Task(current_user, current_project);
+                    getUI().addWindow(add_task_window);
+                }
+
+				/*final Window w = new Window("Edit Dashboard");
 				w.setModal(true);
                 w.setClosable(false);
                 w.setResizable(false);
@@ -181,7 +189,7 @@ public class DashboardView extends VerticalLayout implements View{
                     }
                     
                     
-                });
+                });*/
 				
 			}
 		});
@@ -268,10 +276,11 @@ public class DashboardView extends VerticalLayout implements View{
                      + "<span>Task: " + task.getText() +"</span><br>" , ContentMode.HTML);
         	l.addComponent(label);
         	task.setReaded(true);
-        	Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 
-            if(session.getTransaction() == null)
-        	    session.beginTransaction();
+            Session session = LoginUI.getCurrentSession();
+            if(session.getTransaction() == null){
+                session.beginTransaction();
+            }
             else
                 session.getTransaction().begin();
 
