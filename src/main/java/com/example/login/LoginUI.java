@@ -7,6 +7,7 @@ import java.util.Iterator;
 
 import com.example.login.task.report.DeleteReport;
 import com.example.login.task.report.UpdateReport;
+import com.vaadin.server.*;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
@@ -42,10 +43,6 @@ import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.server.FileResource;
-import com.vaadin.server.Page;
-import com.vaadin.server.ThemeResource;
-import com.vaadin.server.VaadinRequest;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.AbstractSelect.AcceptItem;
@@ -117,8 +114,12 @@ public class LoginUI extends UI {
         bg.setSizeUndefined();
         bg.addStyleName("login-bg");
         root.addComponent(bg);
-        
-        buildLoginView(false);
+
+        Student user = (Student) VaadinService.getCurrentRequest().getWrappedSession().getAttribute("currentUser");
+        if (user == null)
+            buildLoginView(false);
+        else
+            buildMainView();
 	}
 
 	private void buildLoginView(boolean exit){
@@ -200,11 +201,17 @@ public class LoginUI extends UI {
 				catch(HibernateException e){
 					e.printStackTrace();					
 				}
-				
+
 				if (is_user) {
-					user_name = username.getValue();
 					current_user = Users.get_user_by_name(user_name);
+
                     signin.removeShortcutListener(enter);
+                    helpManager.closeAll();
+                    removeStyleName("login");
+                    root.removeComponent(loginLayout);
+
+                    VaadinService.getCurrentRequest().getWrappedSession()
+                            .setAttribute("currentUser", current_user);
                     checkForProject();
                 }
 				else{
@@ -252,15 +259,11 @@ public class LoginUI extends UI {
 	private void buildMainView()
 	 {
 		current_project = current_user.getCurrent_project();
-		   
 		
 		nav = new Navigator(this, content);
         for (String route : routes.keySet()) {
             nav.addView(route, routes.get(route));
         }
-        helpManager.closeAll();
-        removeStyleName("login");
-        root.removeComponent(loginLayout);
         
         root.addComponent(new HorizontalLayout(){
         	{
@@ -527,6 +530,7 @@ public class LoginUI extends UI {
                                      @Override
                                      public void buttonClick(ClickEvent event) {
                                     	 session.close();
+                                         VaadinService.getCurrentRequest().getWrappedSession().removeAttribute("currentUser");
                                          buildLoginView(true);
                                      }
                                  });

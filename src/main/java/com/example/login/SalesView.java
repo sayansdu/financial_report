@@ -3,27 +3,22 @@ package com.example.login;
 import java.awt.Color;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.Calendar;
 
 import com.example.login.data.DataProvider;
 import com.example.login.data.DataProvider.Movie;
 import com.example.login.entity.Product;
 import com.example.login.entity.Project;
-import com.example.login.entity.Report;
-import com.ibm.icu.text.SimpleDateFormat;
 
 import com.vaadin.addon.timeline.Timeline;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
-import com.vaadin.data.Property;
 import com.vaadin.data.util.IndexedContainer;
-import com.vaadin.event.ShortcutAction.KeyCode;
-import com.vaadin.event.ShortcutListener;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Field.ValueChangeEvent;
 
 public class SalesView extends VerticalLayout implements View{
 
