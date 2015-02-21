@@ -198,8 +198,24 @@ public class DashboardView extends VerticalLayout implements View{
         setExpandRatio(row, 1.5f);
         
         row.addComponent(createPanel(new TopGrossingMoviesChart()));
-        TextArea notes = new TextArea("Notes");
-        notes.setValue("Remember to:\n Add graph to SalesView \n Connect to database\n Create a new data\n Change the style");
+        TextArea notes = new TextArea("Tasks");
+
+        String value = "";
+        if(current_user!=null && current_user.getReceived().size()>0){
+
+            String task_str = "";
+            for (Task task: current_user.getReceived()) {
+                task_str = "";
+                task_str += ("From: "+task.getStudent().getName()+"\n");
+                task_str += (" Description: "+task.getText()+"\n");
+                task_str += "\n";
+                value += task_str;
+            }
+        }
+        else{
+            value = "You don't have any tasks";
+        }
+        notes.setValue(value);
         notes.setSizeFull();
         CssLayout panel = (CssLayout) createPanel(notes);
         panel.addStyleName("notes");

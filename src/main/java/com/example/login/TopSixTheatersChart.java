@@ -34,8 +34,8 @@ public class TopSixTheatersChart extends Chart {
         if(currentProject != null && currentProject.getProducts()!= null)
         {
             List<Product> products = new ArrayList<Product>(currentProject.getProducts());
-            if(products.size()>4){
-                for (int i = 0; i < 7; i++) {
+            if(products.size()>5){
+                for (int i = 0; i < 5; i++) {
                     Product product = products.get(i);
                     Set<Report> reports = product.getReport();
                     int score = 0;

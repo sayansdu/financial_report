@@ -35,10 +35,10 @@ public class TopGrossingMoviesChart extends Chart {
         {
             List<Product> products = new ArrayList<Product>(currentProject.getProducts());
 
-            if(products.size()>6){
+            if(products.size()>5){
                 List<Series> series = new ArrayList<Series>();
 
-                for (int i = 0; i < 7; i++) {
+                for (int i = 0; i < 5; i++) {
                     Product product = products.get(i);
                     Set<Report> reports = product.getReport();
                     int score = 0;
